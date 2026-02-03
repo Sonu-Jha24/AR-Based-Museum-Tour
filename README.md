@@ -4,6 +4,7 @@
 🌐 WebAR • 📱 No App Required • 🎮 Interactive Learning
 
 
+
 ## 🚩 Problem
 
 - Museums struggle to engage **young, tech-savvy audiences**
@@ -11,7 +12,7 @@
 - Rare historical pieces are inaccessible to many people
 - Physical visits are restricted by location, cost, and mobility
 
----
+
 
 ## 💡 Solution
 
@@ -19,14 +20,14 @@
 
 Built using **React, Three.js, and AR.js**, the platform delivers an **immersive, interactive, and accessible museum experience**—anytime, anywhere.
 
----
+
 
 ## ✨ Core Features
 
 ### 🔍 Interactive 3D Inspection
 - Rotate, zoom, and scale artifacts in real time  
 - High-resolution textures reveal fine historical details  
-- Powered by Three.js and React Three Fiber  
+- Powered by Three.js and React Three Fiber/A-Frame 
 
 ### 🚪 AR Portals
 - Virtual AR doorways into history  
@@ -43,7 +44,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - Works directly in the mobile browser  
 - Cross-platform support using AR.js  
 
----
+
 
 ## 🛠️ Tech Stack
 
@@ -54,7 +55,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 | Augmented Reality | AR.js |
 | Styling | CSS, Tailwind CSS |
 
----
+
 
 ## 🎯 Why This Matters
 
@@ -63,7 +64,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - 📱 Uses WebAR to remove accessibility barriers  
 - 🌍 Scalable for education, tourism, and museums  
 
----
+
 
 ## 👥 Target Audience
 
@@ -72,7 +73,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - History enthusiasts  
 - Remote learners & tourists  
 
----
+
 
 ## 🏆 Hackathon Highlights
 
@@ -81,7 +82,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - Immersive user experience  
 - Scalable and real-world applicable solution  
 
----
+
 
 ## 🔮 Future Scope
 
@@ -91,13 +92,9 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - Partnerships with real museums  
 - Virtual guided tours and ticketing  
 
----
 
-## 📸 Demo
 
-Add screenshots, demo video, or live link here.
 
----
 
 ## 📄 License
 
