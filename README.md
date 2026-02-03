@@ -51,7 +51,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 | Layer | Technology |
 |------|-----------|
 | Frontend | React.js |
-| 3D Engine | Three.js / React Three Fiber |
+| 3D Engine | Three.js & React Three Fiber/A-Frame |
 | Augmented Reality | AR.js |
 | Styling | CSS, Tailwind CSS |
 
@@ -59,7 +59,7 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 
 ## 🎯 Why This Matters
 
-- 🏛️ Democratizes access to cultural heritage  
+- 🏛️ Easy access to cultural heritage  
 - 🎮 Turns passive learning into interactive exploration  
 - 📱 Uses WebAR to remove accessibility barriers  
 - 🌍 Scalable for education, tourism, and museums  
@@ -75,13 +75,12 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 
 
 
-## 🏆 Hackathon Highlights
+## 🏆 USP
 
 - No-installation WebAR experience  
-- Strong education + cultural impact  
+- Strong education & cultural impact  
 - Immersive user experience  
 - Scalable and real-world applicable solution  
-
 
 
 ## 🔮 Future Scope
@@ -90,16 +89,13 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - AI-powered artifact explanations  
 - Multi-user AR museum tours  
 - Partnerships with real museums  
-- Virtual guided tours and ticketing  
+- Virtual guided tours and ticketing
 
-
-
-
+## 🧑‍🎓 Contributers
+- Samkit Jain
+- Sonu Jha
+- Sahil Rawat
 
 ## 📄 License
 
-This project is developed for **hackathon and educational purposes**.
-
----
-
-⭐ If you like this project, give it a star!
+MIT
