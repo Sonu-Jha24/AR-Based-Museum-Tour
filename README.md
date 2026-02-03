@@ -3,7 +3,6 @@
 
 🌐 WebAR • 📱 No App Required • 🎮 Interactive Learning
 
----
 
 ## 🚩 Problem
 
