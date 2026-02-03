@@ -1,13 +1,13 @@
-🏛️ AR-Based Museum Tour
+**🏛️ AR-Based Museum Tour**
 
 Democratizing cultural heritage through Web-based Augmented Reality
 
-📌 Problem Statement
+**📌 Problem Statement**
 
 Traditional museums often struggle to engage younger, tech-savvy audiences.
 Physical artifacts are usually locked behind glass, limiting interaction, scale perception, and immersive understanding. Additionally, access to world-class museums is restricted by geography, cost, and physical limitations.
 
-💡 Our Solution
+**💡 Our Solution**
 
 AR-Based Museum Tour is a web-based Augmented Reality platform that brings museum artifacts directly into a user’s physical space using only a smartphone browser.
 
@@ -22,7 +22,7 @@ High-resolution textures reveal fine details not easily visible in physical exhi
 
 Powered by Three.js / React Three Fiber
 
-🚪 AR Portals (Immersive Experience)
+**🚪 AR Portals (Immersive Experience)**
 
 Virtual AR “doorways” that users can walk through
 
@@ -30,7 +30,7 @@ Leads to 360° historical environments showing artifacts in their original conte
 
 Enhances storytelling and spatial understanding
 
-🧩 Gamified Restoration Module
+**🧩 Gamified Restoration Module**
 
 Users repair fractured artifacts using AR gestures
 
@@ -38,7 +38,7 @@ Encourages active learning through play
 
 Improves user engagement and retention
 
-🌐 Web-First Accessibility
+**🌐 Web-First Accessibility**
 
 No app installation required
 
@@ -48,7 +48,7 @@ Cross-platform compatibility using AR.js
 
 Makes immersive education accessible to everyone with a camera-enabled device
 
-🛠️ Tech Stack
+**🛠️ Tech Stack**
 Frontend
 
 React.js
@@ -87,7 +87,7 @@ Remote learners
 
 Tourists & history enthusiasts
 
-🏆 Hackathon Value Proposition
+**🏆 Hackathon Value Proposition**
 
 WebAR (no installation barrier)
 
@@ -97,7 +97,7 @@ High technical complexity with real-world use
 
 Scalable for museums, schools, and tourism platforms
 
-🔮 Future Scope
+**🔮 Future Scope**
 
 Multi-language narration & subtitles
 
@@ -109,7 +109,7 @@ NFT-based digital artifact ownership
 
 Integration with real museums and archives
 
-👨‍💻 Team & Contribution
+**👨‍💻 Team & Contribution**
 
 Role: AR Development, Frontend, UX Design
 
@@ -118,6 +118,6 @@ Built During: Hackathon
 Development Time: Rapid prototype with scalable architecture
 
 
-📜 License
+**📜 License**
 
 This project is open-source and created for educational and hackathon purposes.
