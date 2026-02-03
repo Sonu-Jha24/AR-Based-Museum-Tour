@@ -8,7 +8,7 @@
 ## 🚩 Problem
 
 - Museums struggle to engage **young, tech-savvy audiences**
-- Artifacts are locked behind glass, limiting interaction
+- Artifacts cannot be interacted with, reducing understanding and engagement
 - Rare historical pieces are inaccessible to many people
 - Physical visits are restricted by location, cost, and mobility
 
