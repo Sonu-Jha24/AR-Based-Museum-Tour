@@ -98,4 +98,4 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 
 ## 📄 License
 
-MIT
+Apache License 2.0
