@@ -1,0 +1,102 @@
+/* First.css */
+
+@keyframes gridMove {
+  from { background-position: 0 0; }
+  to { background-position: 0 40px; } /* Fast movement for smaller grid */
+}
+
+@keyframes particlesUp {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+
+.hero-container {
+  height: 100vh;
+  width: 100vw;
+  background: radial-gradient(circle at center, #001a33 0%, #000 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* 1. Smaller & Faster Grid */
+.grid-floor {
+  position: absolute;
+  bottom: 0;
+  width: 200%;
+  height: 30%; /* Grid ki height kam kar di (Chota kar diya) */
+  background-image: 
+    linear-gradient(rgba(0, 242, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 255, 0.15) 1px, transparent 1px);
+  background-size: 40px 40px; /* Squares ko chota kiya */
+  transform: perspective(400px) rotateX(60deg);
+  transform-origin: top;
+  animation: gridMove 1.2s linear infinite; /* Animation fast kar di (1.2s) */
+  z-index: 1;
+}
+
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: particlesUp var(--speed) linear infinite;
+  box-shadow: 0 0 8px #00f2ff;
+}
+
+.content {
+  text-align: center;
+  z-index: 5;
+  margin-top: -15vh; /* Center se aur thoda upar shift kiya */
+}
+
+.title {
+  font-size: 4rem; /* Text size thoda optimize kiya */
+  font-weight: 800;
+  color: #00f2ff;
+  text-shadow: 0 0 20px rgba(0, 242, 255, 0.8);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #a0fbff;
+  margin-bottom: 35px;
+  opacity: 0.8;
+}
+
+.begin-btn {
+  padding: 12px 35px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #7000ff, #ff00d4);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(112, 0, 255, 0.5);
+  transition: 0.3s ease;
+  letter-spacing: 2px;
+}
+
+.begin-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 0, 212, 0.8);
+}
