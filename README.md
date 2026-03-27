@@ -90,6 +90,13 @@ Built using **React, Three.js, and AR.js**, the platform delivers an **immersive
 - Partnerships with real museums  
 - Virtual guided tours and ticketing
 
+## 👨‍💻 Team Members:
+
+- Samkit Jain
+- Sonu Jha
+- Gaurav Singh
+- Sahil Rawat
+
 ## 📄 License
 
 Apache License 2.0

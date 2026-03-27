@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ExhibitX — Step Inside History</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --gold:       #C9A84C;
+  --gold-lt:    #E8C97A;
+  --gold-dk:    #8A6520;
+  --gold-pale:  #F5E9C5;
+  --copper:     #B87333;
+  --ink:        #0E0B06;
+  --parchment:  #F2E8D0;
+  --stone:      #2A2318;
+  --stone-lt:   #3D3020;
+  --blood:      #6B1A1A;
+  --rust:       #8B3A2A;
+  --ember:      #C4622A;
+  --smoke:      rgba(14,11,6,0.72);
+  --glass-h:    rgba(242,232,208,0.07);
+  --glass-b:    rgba(201,168,76,0.2);
+  --font-title: 'Cinzel Decorative', serif;
+  --font-serif: 'Cinzel', serif;
+  --font-body:  'EB Garamond', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--ink);
+  color: var(--parchment);
+}
+
+/* ═══════════════════════════════════════════
+   GRAIN OVERLAY (aged paper/film texture)
+═══════════════════════════════════════════ */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.065'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+}
+
+/* ═══════════════════════════════════════════
+   APP
+═══════════════════════════════════════════ */
+#app {
+  width: 100vw; height: 100vh;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ═══════════════════════════════════════════
+   ── INTRO SCREEN ──
+═══════════════════════════════════════════ */
+#intro {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+#intro.exit { opacity: 0; transform: scale(1.06); pointer-events: none; }
+
+/* Cinematic background for intro */
+.intro-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 80%, rgba(196,98,42,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(201,168,76,0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #050302 0%, #0E0B06 30%, #1A1208 60%, #0A0704 100%);
+}
+
+/* Animated candlelight vignette */
+.intro-candle-glow {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.14) 0%, rgba(196,98,42,0.08) 35%, transparent 70%);
+  animation: candleFlicker 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes candleFlicker {
+  0%   { opacity: 0.7; transform: translateX(-50%) scaleX(1); }
+  33%  { opacity: 0.9; transform: translateX(-50%) scaleX(1.03); }
+  66%  { opacity: 0.75; transform: translateX(-50%) scaleX(0.98); }
+  100% { opacity: 0.85; transform: translateX(-50%) scaleX(1.01); }
+}
+
+/* Ornamental horizontal rules */
+.ornament-line {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; max-width: 580px;
+}
+.ornament-line::before, .ornament-line::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.6), transparent);
+}
+.ornament-symbol {
+  font-family: var(--font-serif);
+  font-size: 1rem; color: var(--gold);
+  opacity: 0.7; letter-spacing: 0.3em;
+  flex-shrink: 0;
+}
+
+/* Corner flourishes */
+.corner { position: absolute; width: 80px; height: 80px; }
+.corner svg { width: 100%; height: 100%; }
+.corner-tl { top: 20px; left: 20px; }
+.corner-tr { top: 20px; right: 20px; transform: scaleX(-1); }
+.corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+.corner-br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+.intro-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 18px;
+  padding: 48px 32px;
+  text-align: center;
+  max-width: 760px;
+}
+
+/* Subtitle above title */
+.intro-pre {
+  font-family: var(--font-serif);
+  font-size: clamp(0.6rem, 1.5vw, 0.75rem);
+  font-weight: 400;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.75;
+}
+
+/* THE MAIN TITLE */
+.intro-title {
+  font-family: var(--font-title);
+  font-size: clamp(2rem, 6.5vw, 5rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: 0.04em;
+  color: var(--gold-pale);
+  text-shadow:
+    0 2px 4px rgba(0,0,0,0.8),
+    0 0 40px rgba(201,168,76,0.35),
+    0 0 80px rgba(201,168,76,0.15);
+  animation: titleBreath 6s ease-in-out infinite;
+}
+@keyframes titleBreath {
+  0%,100% { text-shadow: 0 2px 4px rgba(0,0,0,.8), 0 0 40px rgba(201,168,76,.35), 0 0 80px rgba(201,168,76,.15); }
+  50%      { text-shadow: 0 2px 4px rgba(0,0,0,.8), 0 0 55px rgba(201,168,76,.5),  0 0 110px rgba(201,168,76,.22); }
+}
+
+.intro-tagline {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: clamp(1.05rem, 2.4vw, 1.28rem);
+  font-weight: 400;
+  font-style: normal;
+  color: rgba(242,232,208,0.72);
+  max-width: 500px;
+  line-height: 1.7;
+  letter-spacing: 0.015em;
+  text-align: center;
+}
+
+/* ── WAX SEAL / ANCIENT BUTTON — "Let's Begin" ── */
+.btn-wax {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 0 52px;
+  height: 62px;
+  font-family: var(--font-serif);
+  font-size: clamp(0.72rem, 1.6vw, 0.88rem);
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer; border: none;
+  background: none;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+.btn-wax:hover { transform: translateY(-3px); filter: brightness(1.1); }
+.btn-wax:active { transform: scale(0.97); }
+
+/* Stone tablet background shape */
+.btn-wax-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #E8C97A 0%, #C9A84C 30%, #A07828 60%, #C9A84C 80%, #E8C97A 100%);
+  border-radius: 4px;
+  clip-path: polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -2px 0 rgba(0,0,0,0.25),
+    0 4px 20px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(201,168,76,0.4);
+}
+/* Chisel marks / aged texture on button */
+.btn-wax-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.04) 3px,
+    rgba(0,0,0,0.04) 4px
+  );
+  border-radius: inherit;
+}
+/* Top engraved line */
+.btn-wax-bg::after {
+  content: '';
+  position: absolute; top: 5px; left: 5px; right: 5px; bottom: 5px;
+  border: 1px solid rgba(0,0,0,0.15);
+  clip-path: inherit;
+}
+.btn-wax-text {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 10px;
+}
+.btn-wax-icon {
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+/* Small year stamp below button */
+.intro-stamp {
+  font-family: var(--font-serif);
+  font-size: 0.62rem; letter-spacing: 0.22em;
+  color: rgba(201,168,76,0.35);
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════
+   ── DASHBOARD ──
+═══════════════════════════════════════════ */
+#dashboard {
+  display: none; width: 100%; height: 100%;
+  flex-direction: column; position: relative;
+}
+#dashboard.visible { display: flex; }
+
+/* ── WORLD BACKGROUNDS ── */
+#world-bg { position: fixed; inset: 0; z-index: 0; }
+.world-layer {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 1.8s ease-in-out;
+}
+.world-layer.active { opacity: 1; }
+.world-layer svg { width: 100%; height: 100%; }
+
+/* Heavy vignette over all backgrounds */
+.world-layer::after {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 100%, rgba(14,11,6,0.65) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 0% 50%,   rgba(14,11,6,0.42) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 100% 50%, rgba(14,11,6,0.42) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(14,11,6,0.52) 0%, transparent 28%, transparent 58%, rgba(14,11,6,0.68) 100%);
+}
+
+/* ── DASHBOARD FLEX LAYOUT ── */
+#dash-inner {
+  position: relative; z-index: 10;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+}
+
+/* ── HEADER / NAV ── */
+.dash-header {
+  width: 100%; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  align-items: center;
+  padding: 12px 32px 8px;
+  background: linear-gradient(180deg, rgba(14,11,6,0.82) 0%, transparent 100%);
+}
+
+.dash-topbar {
+  width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.dash-logo {
+  font-family: var(--font-serif);
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.dash-logo em {
+  font-family: var(--font-title);
+  font-style: normal; font-size: 1.15em;
+  color: var(--gold-lt);
+}
+
+/* World selector pills in nav */
+.world-nav {
+  display: flex; align-items: center; gap: 4px;
+}
+.world-nav-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  font-family: var(--font-serif);
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(242,232,208,0.38);
+  background: rgba(201,168,76,0.0);
+  border: 1px solid rgba(201,168,76,0.0);
+  border-radius: 2px; cursor: pointer;
+  transition: all 0.3s ease;
+}
+.world-nav-btn.active {
+  color: var(--gold);
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.3);
+}
+.world-nav-btn:hover:not(.active) { color: rgba(242,232,208,0.65); }
+
+/* ── NAV ICON BUTTONS (Docs + Login) ── */
+.nav-icons {
+  display: flex; align-items: center; gap: 6px;
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(201,168,76,0.15);
+}
+.nav-icon-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 5px;
+  width: 34px; height: 34px;
+  background: rgba(201,168,76,0.0);
+  border: 1px solid rgba(201,168,76,0.0);
+  border-radius: 2px;
+  color: rgba(242,232,208,0.38);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  position: relative;
+}
+.nav-icon-btn:hover {
+  background: rgba(201,168,76,0.1);
+  border-color: rgba(201,168,76,0.28);
+  color: var(--gold);
+}
+.nav-icon-btn svg {
+  width: 16px; height: 16px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+  flex-shrink: 0;
+}
+/* Tooltip */
+.nav-icon-btn::after {
+  content: attr(data-tip);
+  position: absolute; top: calc(100% + 7px); left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  background: rgba(26,18,8,0.95);
+  border: 1px solid rgba(201,168,76,0.2);
+  font-family: var(--font-serif);
+  font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+  clip-path: polygon(4px 0%,calc(100% - 4px) 0%,100% 4px,100% calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,0% calc(100% - 4px),0% 4px);
+}
+.nav-icon-btn:hover::after { opacity: 1; }
+
+/* Engraved title line */
+.dash-title-row {
+  width: 100%; max-width: 800px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.dash-scroll-label {
+  font-family: var(--font-serif);
+  font-size: clamp(0.55rem, 1.2vw, 0.65rem);
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(201,168,76,0.45);
+}
+.dash-main-title {
+  font-family: var(--font-title);
+  font-size: clamp(0.95rem, 3vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gold-pale);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7), 0 0 30px rgba(201,168,76,0.25);
+  text-align: center;
+  transition: color 0.6s ease;
+}
+
+/* ── CAROUSEL SECTION ── */
+.carousel-section {
+  flex-shrink: 0;
+  width: 100%;
+  display: flex; flex-direction: row;
+  align-items: center; justify-content: center;
+  gap: 20px;
+  padding: 6px 20px 4px;
+}
+
+/* Stone arrow buttons */
+.stone-arrow {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border: none; background: none;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.stone-arrow:hover { transform: scale(1.08); filter: brightness(1.15); }
+.stone-arrow:active { transform: scale(0.93); }
+.stone-arrow-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #4A3820 0%, #2A1E10 50%, #3D2A14 100%);
+  border: 1px solid rgba(201,168,76,0.25);
+  clip-path: polygon(6px 0%, calc(100% - 6px) 0%, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0% calc(100% - 6px), 0% 6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.stone-arrow-icon {
+  position: relative; z-index: 1;
+  font-size: 1rem; color: var(--gold);
+  font-family: var(--font-serif);
+}
+
+/* Card viewport */
+.card-viewport {
+  flex: 1; max-width: 760px;
+  display: flex; align-items: flex-start; justify-content: center;
+  min-height: 0;
+}
+
+/* ── THE EXHIBIT CARD ── */
+.exhibit-card {
+  width: 100%;
+  display: flex; flex-direction: column;
+  background: rgba(14,11,6,0.62);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 64px rgba(0,0,0,0.65),
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    0 0 0 1px rgba(0,0,0,0.3);
+  animation: cardReveal 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Stone engraving top bar */
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 18px 7px;
+  background: linear-gradient(90deg, rgba(201,168,76,0.08) 0%, rgba(201,168,76,0.04) 50%, rgba(201,168,76,0.08) 100%);
+  border-bottom: 1px solid rgba(201,168,76,0.15);
+  position: relative;
+}
+.card-header::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,0.5), transparent);
+}
+.card-civ {
+  display: flex; align-items: center; gap: 8px;
+}
+.card-civ-flag { font-size: 1.1rem; }
+.card-civ-name {
+  font-family: var(--font-serif);
+  font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(201,168,76,0.6);
+}
+/* Exhibit dot pips */
+.card-pips { display: flex; gap: 6px; align-items: center; }
+.card-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(201,168,76,0.18);
+  border: 1px solid rgba(201,168,76,0.25);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.2s;
+}
+.card-pip.active {
+  background: var(--gold);
+  transform: scale(1.3);
+  box-shadow: 0 0 6px rgba(201,168,76,0.5);
+}
+
+/* Card body — flexbox row */
+.card-body {
+  display: flex; flex-direction: row;
+  flex: 1; min-height: 0;
+}
+
+/* Left column */
+.card-left {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column;
+  gap: 7px;
+  padding: 13px 18px 13px 20px;
+  border-right: 1px solid rgba(201,168,76,0.1);
+}
+.card-era {
+  font-family: var(--font-serif);
+  font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+.card-name {
+  font-family: var(--font-title);
+  font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+  font-weight: 700;
+  color: var(--gold-pale);
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+.card-location {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 0.9rem; font-style: normal;
+  color: rgba(242,232,208,0.45);
+  letter-spacing: 0.01em;
+}
+.card-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201,168,76,0.4), rgba(201,168,76,0.1), transparent);
+}
+.card-desc {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: clamp(0.88rem, 1.6vw, 1rem);
+  font-weight: 400;
+  color: rgba(242,232,208,0.65);
+  line-height: 1.6;
+  font-style: normal;
+}
+
+/* Right column — stats as carved stone */
+.card-right {
+  flex-shrink: 0; width: 136px;
+  display: flex; flex-direction: column;
+  background: rgba(0,0,0,0.15);
+}
+.card-stat {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(201,168,76,0.08);
+  position: relative;
+}
+.card-stat:last-child { border-bottom: none; }
+.card-stat::before {
+  content: '';
+  position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, rgba(201,168,76,0.3), transparent);
+}
+.stat-key {
+  font-family: var(--font-serif);
+  font-size: 0.52rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(201,168,76,0.4);
+}
+.stat-val {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 0.95rem; font-weight: 500;
+  color: rgba(242,232,208,0.78);
+  letter-spacing: 0.01em;
+}
+
+/* Exhibit sub-nav tabs at bottom of card */
+.card-exhibit-tabs {
+  display: flex; flex-shrink: 0;
+  border-top: 1px solid rgba(201,168,76,0.12);
+  background: rgba(0,0,0,0.2);
+}
+.exhibit-tab {
+  flex: 1;
+  padding: 7px 6px;
+  font-family: var(--font-serif);
+  font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  text-align: center;
+  color: rgba(242,232,208,0.28);
+  cursor: pointer;
+  border-right: 1px solid rgba(201,168,76,0.06);
+  transition: color 0.25s, background 0.25s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.exhibit-tab:last-child { border-right: none; }
+.exhibit-tab.active {
+  color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+.exhibit-tab:hover:not(.active) { color: rgba(242,232,208,0.55); }
+
+/* ── EXPLORE BUTTON — ancient stone tablet style ── */
+.explore-wrap {
+  flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px;
+  padding: 6px 0 4px;
+}
+
+.btn-ancient {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 14px;
+  padding: 0 56px;
+  height: 58px;
+  min-width: 280px;
+  font-family: var(--font-serif);
+  font-size: clamp(0.7rem, 1.5vw, 0.84rem);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold-pale);
+  cursor: pointer; border: none; background: none;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+.btn-ancient:hover { transform: translateY(-2px); filter: brightness(1.1); }
+.btn-ancient:active { transform: scale(0.97); }
+
+/* Aged stone/leather background */
+.btn-ancient-bg {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(160deg, #3D2A10 0%, #2A1A08 25%, #1E1206 50%, #2A1A08 75%, #3D2A10 100%);
+  border: 1px solid rgba(201,168,76,0.35);
+  clip-path: polygon(10px 0%, calc(100% - 10px) 0%, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0% calc(100% - 10px), 0% 10px);
+  box-shadow:
+    inset 0 1px 0 rgba(201,168,76,0.15),
+    inset 0 -1px 0 rgba(0,0,0,0.4),
+    0 8px 32px rgba(0,0,0,0.6),
+    0 0 0 1px rgba(0,0,0,0.5);
+}
+/* Inner border inset — feels engraved */
+.btn-ancient-bg::before {
+  content: '';
+  position: absolute; inset: 4px;
+  border: 1px solid rgba(201,168,76,0.12);
+  clip-path: inherit;
+}
+/* Gold shimmer on hover */
+.btn-ancient-bg::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.06) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.btn-ancient:hover .btn-ancient-bg::after { opacity: 1; }
+
+.btn-ancient-content {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 12px;
+}
+/* Wax seal dot on the button */
+.btn-seal {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #8B3A2A, #5A1A0A);
+  border: 1px solid rgba(201,168,76,0.3);
+  flex-shrink: 0;
+  position: relative;
+}
+.btn-seal::after {
+  content: '✦';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.5rem; color: rgba(201,168,76,0.7);
+}
+
+/* Inscription below explore button */
+.explore-inscription {
+  font-family: var(--font-body);
+  font-size: 0.62rem; font-style: italic;
+  color: rgba(201,168,76,0.22);
+  letter-spacing: 0.06em;
+  line-height: 1;
+}
+
+/* ── WORLD STRIP ── */
+.world-strip {
+  flex-shrink: 0; width: 100%;
+  display: flex; justify-content: center; gap: 0;
+  background: rgba(14,11,6,0.75);
+  border-top: 1px solid rgba(201,168,76,0.12);
+  backdrop-filter: blur(12px);
+}
+.world-tab-btn {
+  flex: 1; max-width: 220px;
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-serif);
+  font-size: clamp(0.6rem, 1.3vw, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(242,232,208,0.28);
+  cursor: pointer; border: none; background: none;
+  border-bottom: 2px solid transparent;
+  border-top: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+.world-tab-btn:hover { color: rgba(242,232,208,0.6); }
+.world-tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+  background: rgba(201,168,76,0.05);
+}
+.world-tab-flag { font-size: 1rem; }
+.world-tab-name { display: none; }
+@media(min-width: 460px) { .world-tab-name { display: inline; } }
+
+/* ═══════════════════════════════════════════
+   AR OVERLAY
+═══════════════════════════════════════════ */
+#ar-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 600;
+  background: rgba(5,3,1,0.93);
+  flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 40px 32px;
+  animation: fadeIn 0.4s ease;
+}
+#ar-overlay.show { display: flex; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+.ar-ov-ornament {
+  font-family: var(--font-serif);
+  font-size: 1.5rem; color: var(--gold);
+  letter-spacing: 0.4em; margin-bottom: 12px; opacity: 0.5;
+}
+.ar-ov-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.2rem, 3vw, 1.9rem);
+  color: var(--gold-pale);
+  margin-bottom: 10px;
+  text-shadow: 0 0 30px rgba(201,168,76,0.3);
+}
+.ar-ov-sub {
+  font-family: var(--font-body);
+  font-size: 0.95rem; font-style: italic;
+  color: rgba(242,232,208,0.4);
+  max-width: 360px; margin-bottom: 32px; line-height: 1.7;
+}
+.ar-spinner {
+  width: 48px; height: 48px;
+  border: 1px solid rgba(201,168,76,0.15);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  margin: 0 auto 28px;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+
+/* Back button in AR overlay — also ancient style */
+.btn-ancient-sm {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 0 32px;
+  height: 46px;
+  font-family: var(--font-serif);
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(242,232,208,0.5);
+  cursor: pointer; border: none; background: none;
+  transition: transform 0.2s, filter 0.2s;
+}
+.btn-ancient-sm:hover { transform: translateY(-2px); color: rgba(242,232,208,0.8); }
+.btn-ancient-sm-bg {
+  position: absolute; inset: 0;
+  background: rgba(42,26,8,0.6);
+  border: 1px solid rgba(201,168,76,0.18);
+  clip-path: polygon(6px 0%,calc(100% - 6px) 0%,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0% calc(100% - 6px),0% 6px);
+}
+.btn-ancient-sm-text { position: relative; z-index: 1; }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast {
+  position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%);
+  padding: 8px 22px;
+  background: rgba(42,26,8,0.85);
+  border: 1px solid rgba(201,168,76,0.25);
+  font-family: var(--font-serif);
+  font-size: 0.68rem; letter-spacing: 0.12em;
+  color: var(--gold); white-space: nowrap;
+  z-index: 400; opacity: 0; transition: opacity 0.35s; pointer-events: none;
+  clip-path: polygon(6px 0%,calc(100% - 6px) 0%,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0% calc(100% - 6px),0% 6px);
+}
+.toast.show { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 600px) {
+  .card-body { flex-direction: column; }
+  .card-right {
+    width: 100%; flex-direction: row;
+    border-top: 1px solid rgba(201,168,76,0.08); border-right: none;
+  }
+  .card-left { border-right: none; padding: 16px; }
+  .card-stat { border-bottom: none; border-right: 1px solid rgba(201,168,76,0.08); padding: 10px 12px; }
+  .card-stat:last-child { border-right: none; }
+  .card-stat::before { display: none; }
+  .carousel-section { gap: 12px; padding: 0 10px; }
+  .stone-arrow { width: 40px; height: 40px; }
+  .dash-header { padding: 14px 16px 10px; }
+  .btn-ancient { min-width: 240px; padding: 0 32px; height: 52px; }
+  .corner { width: 55px; height: 55px; }
+  .intro-content { padding: 32px 20px; gap: 14px; }
+}
+
+@media (max-width: 380px) {
+  .card-exhibit-tabs { flex-wrap: wrap; }
+  .exhibit-tab { flex: 1 0 50%; font-size: 0.55rem; }
+  .world-nav { display: none; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════════════════════════════════
+     INTRO SCREEN
+═══════════════════════════════════════════ -->
+<div id="intro">
+  <div class="intro-bg"></div>
+  <div class="intro-candle-glow"></div>
+
+  <!-- Corner flourishes -->
+  <div class="corner corner-tl">
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path d="M4 76 L4 4 L76 4" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+      <path d="M4 76 L4 20 L20 4" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>
+      <circle cx="4" cy="4" r="3" fill="rgba(201,168,76,0.5)"/>
+      <path d="M12 4 Q4 4 4 12" stroke="rgba(201,168,76,0.3)" stroke-width="0.5" fill="none"/>
+      <line x1="4" y1="28" x2="14" y2="28" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="4" y1="44" x2="10" y2="44" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>
+      <line x1="28" y1="4" x2="28" y2="14" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="44" y1="4" x2="44" y2="10" stroke="rgba(201,168,76,0.15)" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-tr">
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path d="M4 76 L4 4 L76 4" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+      <circle cx="4" cy="4" r="3" fill="rgba(201,168,76,0.5)"/>
+      <path d="M12 4 Q4 4 4 12" stroke="rgba(201,168,76,0.3)" stroke-width="0.5" fill="none"/>
+      <line x1="4" y1="28" x2="14" y2="28" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="28" y1="4" x2="28" y2="14" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-bl">
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path d="M4 76 L4 4 L76 4" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+      <circle cx="4" cy="4" r="3" fill="rgba(201,168,76,0.5)"/>
+      <path d="M12 4 Q4 4 4 12" stroke="rgba(201,168,76,0.3)" stroke-width="0.5" fill="none"/>
+      <line x1="4" y1="28" x2="14" y2="28" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="28" y1="4" x2="28" y2="14" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="corner corner-br">
+    <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <path d="M4 76 L4 4 L76 4" stroke="rgba(201,168,76,0.4)" stroke-width="1"/>
+      <circle cx="4" cy="4" r="3" fill="rgba(201,168,76,0.5)"/>
+      <path d="M12 4 Q4 4 4 12" stroke="rgba(201,168,76,0.3)" stroke-width="0.5" fill="none"/>
+      <line x1="4" y1="28" x2="14" y2="28" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+      <line x1="28" y1="4" x2="28" y2="14" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <div class="intro-content">
+    <div class="intro-pre">Anno Domini · A Journey Through Time</div>
+
+    <div class="ornament-line">
+      <span class="ornament-symbol">⸻ ✦ ⸻</span>
+    </div>
+
+    <h1 class="intro-title">Step Inside<br>History</h1>
+
+    <div class="ornament-line">
+      <span class="ornament-symbol">⸻ ✦ ⸻</span>
+    </div>
+
+    <p class="intro-tagline">
+      Experience 5,000 years of human civilisation through Augmented Reality — Indian heritage, Egyptian wonders &amp; Roman grandeur, alive in your space.
+    </p>
+
+    <!-- THE HISTORICAL BUTTON -->
+    <button class="btn-wax" onclick="beginJourney()">
+      <div class="btn-wax-bg"></div>
+      <div class="btn-wax-text">
+        <span class="btn-wax-icon">⚔</span>
+        Begin the Journey
+        <span class="btn-wax-icon">⚔</span>
+      </div>
+    </button>
+
+    <div class="intro-stamp">ExhibitX · AR Museum · Est. MMXXVI</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     WORLD BACKGROUNDS
+═══════════════════════════════════════════ -->
+<div id="world-bg">
+
+  <!-- INDIA — Taj Mahal at dusk (id updated to bg-taj) -->
+  <div class="world-layer active" id="bg-taj">
+    <svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+      <defs>
+        <linearGradient id="isky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#06030F"/>
+          <stop offset="14%"  stop-color="#100820"/>
+          <stop offset="28%"  stop-color="#2A1040"/>
+          <stop offset="40%"  stop-color="#5C1E5C"/>
+          <stop offset="50%"  stop-color="#9E3060"/>
+          <stop offset="60%"  stop-color="#D05A48"/>
+          <stop offset="70%"  stop-color="#E8904A"/>
+          <stop offset="78%"  stop-color="#F0B85A"/>
+          <stop offset="86%"  stop-color="#EED090"/>
+          <stop offset="94%"  stop-color="#D8B870"/>
+          <stop offset="100%" stop-color="#B89048"/>
+        </linearGradient>
+        <radialGradient id="isun" cx="50%" cy="74%" r="20%">
+          <stop offset="0%"   stop-color="#FFF8D0" stop-opacity="0.95"/>
+          <stop offset="25%"  stop-color="#FFD860" stop-opacity="0.65"/>
+          <stop offset="60%"  stop-color="#FF9030" stop-opacity="0.25"/>
+          <stop offset="100%" stop-color="#FF6010" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="iwater" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#C8A050" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#805820" stop-opacity="0.25"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="1440" height="900" fill="url(#isky)"/>
+      <ellipse cx="720" cy="666" rx="220" ry="160" fill="url(#isun)"/>
+
+      <!-- Stars in upper sky -->
+      <circle cx="110" cy="55"  r="1.5" fill="#fff" opacity=".75"/>
+      <circle cx="260" cy="28"  r="1"   fill="#fff" opacity=".55"/>
+      <circle cx="440" cy="72"  r="2"   fill="#e8d8ff" opacity=".65"/>
+      <circle cx="620" cy="18"  r="1.5" fill="#fff" opacity=".8"/>
+      <circle cx="820" cy="42"  r="1"   fill="#fff" opacity=".55"/>
+      <circle cx="990" cy="30"  r="2"   fill="#e8d8ff" opacity=".6"/>
+      <circle cx="1170" cy="65" r="1.5" fill="#fff" opacity=".7"/>
+      <circle cx="1340" cy="38" r="1"   fill="#fff" opacity=".5"/>
+      <circle cx="180" cy="115" r="1"   fill="#fff" opacity=".4"/>
+      <circle cx="900" cy="85"  r="1.5" fill="#e8d8ff" opacity=".55"/>
+
+      <!-- Ground -->
+      <rect x="0" y="792" width="1440" height="108" fill="#8A6020" opacity="0.7"/>
+      <rect x="0" y="788" width="1440" height="8"   fill="#A07830" opacity="0.6"/>
+
+      <!-- TAJ MAHAL ───────────────────────────── -->
+      <!-- Reflecting pool -->
+      <rect x="590" y="792" width="260" height="88"  fill="url(#iwater)"/>
+      <rect x="586" y="788" width="268" height="6"   fill="#B08840" opacity="0.45"/>
+      <!-- Pool reflection shimmer lines -->
+      <line x1="610" y1="820" x2="820" y2="820" stroke="rgba(255,220,100,0.12)" stroke-width="1"/>
+      <line x1="625" y1="836" x2="808" y2="836" stroke="rgba(255,220,100,0.09)" stroke-width="1"/>
+      <line x1="640" y1="852" x2="794" y2="852" stroke="rgba(255,220,100,0.07)" stroke-width="1"/>
+      <!-- Reflection silhouette in pool -->
+      <ellipse cx="720" cy="812" rx="72" ry="22" fill="#C8A050" opacity="0.18"/>
+      <rect x="702" y="800" width="36" height="40" fill="#B89040" opacity="0.12"/>
+
+      <!-- Cypress trees flanking pool -->
+      <rect x="572" y="730" width="13" height="64" fill="#1E3010" opacity="0.65"/>
+      <ellipse cx="578" cy="722" rx="11" ry="26" fill="#2A4018" opacity="0.65"/>
+      <rect x="548" y="746" width="11" height="50" fill="#1A2C0C" opacity="0.55"/>
+      <ellipse cx="553" cy="738" rx="9" ry="22" fill="#243814" opacity="0.55"/>
+      <rect x="847" y="730" width="13" height="64" fill="#1E3010" opacity="0.65"/>
+      <ellipse cx="853" cy="722" rx="11" ry="26" fill="#2A4018" opacity="0.65"/>
+      <rect x="869" y="746" width="11" height="50" fill="#1A2C0C" opacity="0.55"/>
+      <ellipse cx="874" cy="738" rx="9" ry="22" fill="#243814" opacity="0.55"/>
+
+      <!-- Platform/plinth base -->
+      <rect x="348" y="774" width="744" height="20" fill="#D8C890" opacity="0.55"/>
+      <rect x="368" y="762" width="704" height="16" fill="#E0D098" opacity="0.52"/>
+      <rect x="388" y="752" width="664" height="12" fill="#D0C080" opacity="0.5"/>
+
+      <!-- Plinth arch row -->
+      <rect x="408" y="714" width="624" height="42" fill="#DDD0A0" opacity="0.52"/>
+      <!-- plinth arches -->
+      <rect x="420" y="718" width="36" height="38" fill="#0C0804" opacity="0.45"/>
+      <ellipse cx="438" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.45"/>
+      <rect x="470" y="718" width="36" height="38" fill="#0C0804" opacity="0.4"/>
+      <ellipse cx="488" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.4"/>
+      <rect x="520" y="718" width="36" height="38" fill="#0C0804" opacity="0.4"/>
+      <ellipse cx="538" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.4"/>
+      <rect x="570" y="718" width="36" height="38" fill="#0C0804" opacity="0.38"/>
+      <ellipse cx="588" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.38"/>
+      <rect x="620" y="718" width="36" height="38" fill="#0C0804" opacity="0.38"/>
+      <ellipse cx="638" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.38"/>
+      <rect x="784" y="718" width="36" height="38" fill="#0C0804" opacity="0.38"/>
+      <ellipse cx="802" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.38"/>
+      <rect x="834" y="718" width="36" height="38" fill="#0C0804" opacity="0.38"/>
+      <ellipse cx="852" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.38"/>
+      <rect x="884" y="718" width="36" height="38" fill="#0C0804" opacity="0.4"/>
+      <ellipse cx="902" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.4"/>
+      <rect x="934" y="718" width="36" height="38" fill="#0C0804" opacity="0.4"/>
+      <ellipse cx="952" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.4"/>
+      <rect x="984" y="718" width="36" height="38" fill="#0C0804" opacity="0.45"/>
+      <ellipse cx="1002" cy="718" rx="18" ry="13" fill="#0C0804" opacity="0.45"/>
+
+      <!-- LEFT MINARET ──── -->
+      <rect x="370" y="574" width="40" height="180" rx="2" fill="#DDD0A0" opacity="0.65"/>
+      <!-- balcony rings -->
+      <rect x="362" y="614" width="56" height="7" rx="1" fill="#C8B888" opacity="0.55"/>
+      <rect x="364" y="654" width="52" height="7" rx="1" fill="#C8B888" opacity="0.5"/>
+      <rect x="366" y="694" width="48" height="7" rx="1" fill="#C8B888" opacity="0.45"/>
+      <rect x="368" y="734" width="44" height="7" rx="1" fill="#C8B888" opacity="0.4"/>
+      <!-- minaret cap drum -->
+      <rect x="376" y="560" width="28" height="18" rx="1" fill="#D0C090" opacity="0.6"/>
+      <!-- minaret dome -->
+      <ellipse cx="390" cy="556" rx="22" ry="28" fill="#DDD0A0" opacity="0.68"/>
+      <!-- finial -->
+      <rect x="387" y="528" width="6" height="26" fill="#C0B070" opacity="0.7"/>
+      <circle cx="390" cy="526" r="5" fill="#D4B850" opacity="0.75"/>
+      <rect x="388" y="515" width="4" height="12" fill="#C8A840" opacity="0.7"/>
+      <circle cx="390" cy="513" r="3" fill="#E8C840" opacity="0.8"/>
+
+      <!-- RIGHT MINARET ──── -->
+      <rect x="1030" y="574" width="40" height="180" rx="2" fill="#DDD0A0" opacity="0.65"/>
+      <rect x="1022" y="614" width="56" height="7" rx="1" fill="#C8B888" opacity="0.55"/>
+      <rect x="1024" y="654" width="52" height="7" rx="1" fill="#C8B888" opacity="0.5"/>
+      <rect x="1026" y="694" width="48" height="7" rx="1" fill="#C8B888" opacity="0.45"/>
+      <rect x="1028" y="734" width="44" height="7" rx="1" fill="#C8B888" opacity="0.4"/>
+      <rect x="1036" y="560" width="28" height="18" rx="1" fill="#D0C090" opacity="0.6"/>
+      <ellipse cx="1050" cy="556" rx="22" ry="28" fill="#DDD0A0" opacity="0.68"/>
+      <rect x="1047" y="528" width="6" height="26" fill="#C0B070" opacity="0.7"/>
+      <circle cx="1050" cy="526" r="5" fill="#D4B850" opacity="0.75"/>
+      <rect x="1048" y="515" width="4" height="12" fill="#C8A840" opacity="0.7"/>
+      <circle cx="1050" cy="513" r="3" fill="#E8C840" opacity="0.8"/>
+
+      <!-- MAIN BODY ──── -->
+      <rect x="480" y="640" width="480" height="78" rx="1" fill="#E0D0A8" opacity="0.62"/>
+      <!-- main arched entrance -->
+      <rect x="666" y="650" width="108" height="68" fill="#080502" opacity="0.6"/>
+      <ellipse cx="720" cy="650" rx="54" ry="38" fill="#080502" opacity="0.6"/>
+      <!-- side arches -->
+      <rect x="500" y="662" width="56" height="56" fill="#080502" opacity="0.42"/>
+      <ellipse cx="528" cy="662" rx="28" ry="20" fill="#080502" opacity="0.42"/>
+      <rect x="884" y="662" width="56" height="56" fill="#080502" opacity="0.42"/>
+      <ellipse cx="912" cy="662" rx="28" ry="20" fill="#080502" opacity="0.42"/>
+
+      <!-- octagonal drum -->
+      <rect x="548" y="548" width="344" height="96" rx="2" fill="#E0D0A8" opacity="0.64"/>
+      <rect x="534" y="543" width="372" height="10" fill="#C8B880" opacity="0.55"/>
+
+      <!-- SMALL CORNER DOMES ──── -->
+      <ellipse cx="570" cy="550" rx="36" ry="44" fill="#D8C898" opacity="0.62"/>
+      <rect x="566" y="506" width="8" height="26" fill="#C0B068" opacity="0.7"/>
+      <circle cx="570" cy="504" r="6" fill="#E0C050" opacity="0.75"/>
+      <ellipse cx="870" cy="550" rx="36" ry="44" fill="#D8C898" opacity="0.62"/>
+      <rect x="866" y="506" width="8" height="26" fill="#C0B068" opacity="0.7"/>
+      <circle cx="870" cy="504" r="6" fill="#E0C050" opacity="0.75"/>
+
+      <!-- MAIN DOME ──── -->
+      <ellipse cx="720" cy="410" rx="140" ry="100" fill="#EAE0C0" opacity="0.7"/>
+      <ellipse cx="720" cy="390" rx="116" ry="84" fill="#E8DCC0" opacity="0.65"/>
+      <!-- Dome highlight -->
+      <ellipse cx="694" cy="355" rx="38" ry="28" fill="#FFF8E8" opacity="0.15"/>
+      <!-- Dome finial -->
+      <rect x="715" y="310" width="10" height="64" fill="#D0C088" opacity="0.75"/>
+      <ellipse cx="720" cy="308" rx="14" ry="11" fill="#D4BE78" opacity="0.8"/>
+      <rect x="716" y="295" width="8" height="14" fill="#C8B070" opacity="0.75"/>
+      <circle cx="720" cy="292" r="5" fill="#F0D050" opacity="0.85"/>
+
+      <!-- Vignette -->
+      <rect x="0" y="640" width="480" height="260" fill="rgba(8,5,2,0.35)"/>
+      <rect x="960" y="640" width="480" height="260" fill="rgba(8,5,2,0.35)"/>
+    </svg>
+  </div>
+
+  <!-- EGYPT — Desert sunset with pyramids -->
+  <div class="world-layer" id="bg-pyramid">
+    <svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+      <defs>
+        <linearGradient id="esky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0A0C18"/>
+          <stop offset="18%"  stop-color="#1A2848"/>
+          <stop offset="34%"  stop-color="#3A5888"/>
+          <stop offset="48%"  stop-color="#7098B8"/>
+          <stop offset="60%"  stop-color="#B89060"/>
+          <stop offset="70%"  stop-color="#D07020"/>
+          <stop offset="80%"  stop-color="#B85010"/>
+          <stop offset="90%"  stop-color="#903008"/>
+          <stop offset="100%" stop-color="#601804"/>
+        </linearGradient>
+        <radialGradient id="esun" cx="70%" cy="58%" r="22%">
+          <stop offset="0%"   stop-color="#FFF8C0" stop-opacity="1"/>
+          <stop offset="20%"  stop-color="#FFD040" stop-opacity="0.75"/>
+          <stop offset="55%"  stop-color="#FF8010" stop-opacity="0.3"/>
+          <stop offset="100%" stop-color="#FF4000" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="esand" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#C87820"/>
+          <stop offset="100%" stop-color="#703808"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="900" fill="url(#esky)"/>
+      <ellipse cx="1010" cy="520" rx="240" ry="200" fill="url(#esun)"/>
+      <!-- Desert -->
+      <rect x="0" y="730" width="1440" height="170" fill="url(#esand)" opacity="0.9"/>
+      <ellipse cx="250"  cy="732" rx="320" ry="44" fill="#B06818" opacity="0.65"/>
+      <ellipse cx="800"  cy="738" rx="380" ry="36" fill="#C07820" opacity="0.6"/>
+      <ellipse cx="1300" cy="734" rx="280" ry="40" fill="#B06818" opacity="0.6"/>
+      <!-- MAIN PYRAMID -->
+      <polygon points="400,730 720,280 1040,730" fill="#C89848" opacity="0.82"/>
+      <polygon points="400,730 720,280 580,730"  fill="#906818" opacity="0.5"/>
+      <!-- courses -->
+      <line x1="418" y1="696" x2="1022" y2="696" stroke="#A07828" stroke-width="1.5" opacity="0.38"/>
+      <line x1="444" y1="660" x2="996"  y2="660" stroke="#A07828" stroke-width="1.5" opacity="0.32"/>
+      <line x1="476" y1="622" x2="964"  y2="622" stroke="#A07828" stroke-width="1.5" opacity="0.28"/>
+      <line x1="514" y1="584" x2="926"  y2="584" stroke="#A07828" stroke-width="1.5" opacity="0.24"/>
+      <line x1="558" y1="544" x2="882"  y2="544" stroke="#A07828" stroke-width="1.5" opacity="0.2"/>
+      <line x1="608" y1="504" x2="832"  y2="504" stroke="#A07828" stroke-width="1.5" opacity="0.17"/>
+      <line x1="660" y1="464" x2="780"  y2="464" stroke="#A07828" stroke-width="1.5" opacity="0.14"/>
+      <!-- capstone gold glow -->
+      <ellipse cx="720" cy="282" rx="14" ry="9" fill="#FFD840" opacity="0.65"/>
+      <!-- side pyramids -->
+      <polygon points="56,730  210,555 364,730" fill="#A87830" opacity="0.7"/>
+      <polygon points="56,730  210,555 148,730" fill="#806018" opacity="0.45"/>
+      <polygon points="1076,730 1230,590 1384,730" fill="#A07828" opacity="0.65"/>
+      <!-- Sphinx -->
+      <rect x="142" y="658" width="228" height="76" rx="10" fill="#C09040" opacity="0.72"/>
+      <ellipse cx="362" cy="644" rx="42" ry="50" fill="#C09040" opacity="0.74"/>
+      <rect x="332" y="606" width="62" height="24" rx="4" fill="#D4A840" opacity="0.72"/>
+      <rect x="330" y="628" width="24" height="82" rx="4" fill="#C09040" opacity="0.68"/>
+      <rect x="376" y="628" width="24" height="82" rx="4" fill="#C09040" opacity="0.68"/>
+      <!-- sphinx face details -->
+      <rect x="345" y="636" rx="2" width="12" height="5" fill="#B08030" opacity="0.5"/>
+      <rect x="363" y="636" rx="2" width="12" height="5" fill="#B08030" opacity="0.5"/>
+      <rect x="351" y="650" rx="2" width="14" height="4" fill="#A07020" opacity="0.4"/>
+      <!-- Sphinx beard -->
+      <rect x="355" y="680" rx="3" width="10" height="22" fill="#B08030" opacity="0.45"/>
+      <!-- Birds -->
+      <path d="M230 240 Q238 232 246 240 Q254 232 262 240" stroke="#223" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <path d="M310 210 Q318 202 326 210 Q334 202 342 210" stroke="#223" stroke-width="1.5" fill="none" opacity="0.35"/>
+      <rect x="0" y="650" width="440" height="280" fill="rgba(8,4,1,.38)"/>
+      <rect x="1000" y="650" width="440" height="280" fill="rgba(8,4,1,.28)"/>
+    </svg>
+  </div>
+
+  <!-- ROME — Moonlit night Colosseum -->
+  <div class="world-layer" id="bg-colosseum">
+    <svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+      <defs>
+        <linearGradient id="rsky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"   stop-color="#0C1428"/>
+          <stop offset="16%"  stop-color="#162240"/>
+          <stop offset="30%"  stop-color="#1E3258"/>
+          <stop offset="44%"  stop-color="#2A4472"/>
+          <stop offset="58%"  stop-color="#385A90"/>
+          <stop offset="72%"  stop-color="#4A6FA8"/>
+          <stop offset="85%"  stop-color="#5A80B8"/>
+          <stop offset="100%" stop-color="#506888"/>
+        </linearGradient>
+        <radialGradient id="rmoon" cx="76%" cy="20%" r="10%">
+          <stop offset="0%"   stop-color="#F0E8D0" stop-opacity="1"/>
+          <stop offset="55%"  stop-color="#C8C0A0" stop-opacity="0.45"/>
+          <stop offset="100%" stop-color="#607090" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1440" height="900" fill="url(#rsky)"/>
+      <!-- Moon + halo -->
+      <circle cx="1094" cy="182" r="52" fill="#F8F4E8" opacity="0.96"/>
+      <circle cx="1080" cy="170" r="46" fill="url(#rsky)" opacity="0.2"/>
+      <ellipse cx="1094" cy="182" rx="130" ry="110" fill="url(#rmoon)"/>
+      <!-- Stars -->
+      <circle cx="72"   cy="48"  r="1.5" fill="#fff" opacity=".75"/>
+      <circle cx="188"  cy="24"  r="1"   fill="#fff" opacity=".55"/>
+      <circle cx="320"  cy="66"  r="2"   fill="#cde" opacity=".65"/>
+      <circle cx="488"  cy="36"  r="1.5" fill="#fff" opacity=".8"/>
+      <circle cx="660"  cy="18"  r="1"   fill="#fff" opacity=".55"/>
+      <circle cx="820"  cy="52"  r="1.5" fill="#cde" opacity=".65"/>
+      <circle cx="920"  cy="30"  r="2"   fill="#fff" opacity=".7"/>
+      <circle cx="1250" cy="72"  r="1"   fill="#fff" opacity=".5"/>
+      <circle cx="1380" cy="40"  r="1.5" fill="#cde" opacity=".65"/>
+      <circle cx="145"  cy="112" r="1"   fill="#fff" opacity=".4"/>
+      <circle cx="420"  cy="95"  r="1"   fill="#fff" opacity=".45"/>
+      <circle cx="752"  cy="82"  r="1.5" fill="#cde" opacity=".55"/>
+      <circle cx="540"  cy="140" r="1"   fill="#fff" opacity=".38"/>
+
+      <!-- Ground -->
+      <rect x="0" y="762" width="1440" height="138" fill="#1E1408" opacity="0.92"/>
+      <rect x="0" y="758" width="1440" height="8"   fill="#2E1E0C" opacity="0.75"/>
+
+      <!-- COLOSSEUM ────────────────────────────── -->
+      <!-- Base tier -->
+      <rect x="220" y="606" width="1000" height="162" fill="#503C22" opacity="0.78"/>
+      <!-- Arch openings tier 1 — many arches, amber lit -->
+      <rect x="240" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.72"/>
+      <ellipse cx="254" cy="622" rx="14" ry="11" fill="#040306" opacity="0.72"/>
+      <rect x="282" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.68"/>
+      <ellipse cx="296" cy="622" rx="14" ry="11" fill="#040306" opacity="0.68"/>
+      <rect x="324" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="338" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="366" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="380" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="408" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="422" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="450" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.62"/>
+      <ellipse cx="464" cy="622" rx="14" ry="11" fill="#040306" opacity="0.62"/>
+      <rect x="492" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.62"/>
+      <ellipse cx="506" cy="622" rx="14" ry="11" fill="#040306" opacity="0.62"/>
+      <rect x="534" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="548" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="576" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="590" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="618" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="632" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="660" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="674" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="702" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="716" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="744" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.6"/>
+      <ellipse cx="758" cy="622" rx="14" ry="11" fill="#040306" opacity="0.6"/>
+      <rect x="786" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.62"/>
+      <ellipse cx="800" cy="622" rx="14" ry="11" fill="#040306" opacity="0.62"/>
+      <rect x="828" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.62"/>
+      <ellipse cx="842" cy="622" rx="14" ry="11" fill="#040306" opacity="0.62"/>
+      <rect x="870" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="884" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="912" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="926" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="954" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.65"/>
+      <ellipse cx="968" cy="622" rx="14" ry="11" fill="#040306" opacity="0.65"/>
+      <rect x="996" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.68"/>
+      <ellipse cx="1010" cy="622" rx="14" ry="11" fill="#040306" opacity="0.68"/>
+      <rect x="1038" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.7"/>
+      <ellipse cx="1052" cy="622" rx="14" ry="11" fill="#040306" opacity="0.7"/>
+      <rect x="1080" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.72"/>
+      <ellipse cx="1094" cy="622" rx="14" ry="11" fill="#040306" opacity="0.72"/>
+      <rect x="1122" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.72"/>
+      <ellipse cx="1136" cy="622" rx="14" ry="11" fill="#040306" opacity="0.72"/>
+      <rect x="1164" y="622" width="28" height="78" rx="2" fill="#040306" opacity="0.72"/>
+      <ellipse cx="1178" cy="622" rx="14" ry="11" fill="#040306" opacity="0.72"/>
+
+      <!-- Middle tier — amber lit windows -->
+      <rect x="236" y="522" width="968" height="88" fill="#3E2E18" opacity="0.75"/>
+      <!-- amber window glow -->
+      <rect x="258" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.48"/>
+      <rect x="300" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="342" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.45"/>
+      <rect x="384" y="533" width="22" height="52" rx="2" fill="#B05808" opacity="0.4"/>
+      <rect x="426" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.44"/>
+      <rect x="468" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="510" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.46"/>
+      <rect x="552" y="533" width="22" height="52" rx="2" fill="#B05808" opacity="0.4"/>
+      <rect x="594" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.44"/>
+      <rect x="636" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="678" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.45"/>
+      <rect x="720" y="533" width="22" height="52" rx="2" fill="#B05808" opacity="0.4"/>
+      <rect x="762" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.44"/>
+      <rect x="804" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="846" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.45"/>
+      <rect x="888" y="533" width="22" height="52" rx="2" fill="#B05808" opacity="0.4"/>
+      <rect x="930" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.44"/>
+      <rect x="972" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="1014" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.46"/>
+      <rect x="1056" y="533" width="22" height="52" rx="2" fill="#B05808" opacity="0.4"/>
+      <rect x="1098" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.44"/>
+      <rect x="1140" y="533" width="22" height="52" rx="2" fill="#C06010" opacity="0.42"/>
+      <rect x="1182" y="533" width="22" height="52" rx="2" fill="#D07018" opacity="0.45"/>
+
+      <!-- Top attic tier -->
+      <rect x="252" y="462" width="936" height="64" fill="#2E2010" opacity="0.72"/>
+      <!-- pilasters -->
+      <rect x="272" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.55"/>
+      <rect x="312" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="352" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="392" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="432" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="472" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="512" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="552" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="592" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="632" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="672" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="712" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="752" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="792" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="832" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="872" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="912" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="952" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="992" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="1032" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="1072" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.5"/>
+      <rect x="1112" y="468" width="10" height="52" rx="1" fill="#503820" opacity="0.55"/>
+      <!-- cornice -->
+      <rect x="252" y="460" width="936" height="7" fill="#604028" opacity="0.68"/>
+      <!-- broken top section -->
+      <rect x="252" y="406" width="240" height="56" fill="#2E2010" opacity="0.58"/>
+      <rect x="948" y="414" width="240" height="48" fill="#2E2010" opacity="0.52"/>
+      <!-- flanking trees -->
+      <rect x="60"  y="680" width="18" height="90" fill="#182408" opacity="0.68"/>
+      <ellipse cx="69"  cy="668" rx="24" ry="44" fill="#223010" opacity="0.65"/>
+      <rect x="110" y="694" width="14" height="76" fill="#142004" opacity="0.6"/>
+      <ellipse cx="117" cy="686" rx="18" ry="34" fill="#1E2C0C" opacity="0.58"/>
+      <rect x="1308" y="676" width="18" height="94" fill="#182408" opacity="0.68"/>
+      <ellipse cx="1317" cy="664" rx="24" ry="44" fill="#223010" opacity="0.65"/>
+      <rect x="1358" y="692" width="14" height="78" fill="#142004" opacity="0.6"/>
+      <ellipse cx="1365" cy="684" rx="18" ry="34" fill="#1E2C0C" opacity="0.58"/>
+
+      <!-- side vignettes -->
+      <rect x="0"    y="560" width="220" height="340" fill="rgba(3,3,6,.25)"/>
+      <rect x="1220" y="560" width="220" height="340" fill="rgba(3,3,6,.18)"/>
+    </svg>
+  </div>
+
+<!-- ── INDIA: QUTUB MINAR — twilight purple ── -->
+<div class="world-layer" id="bg-qutub">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="qsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#080510"/><stop offset="25%" stop-color="#1A0830"/><stop offset="45%" stop-color="#380A50"/><stop offset="60%" stop-color="#5A1A40"/><stop offset="75%" stop-color="#8A2A28"/><stop offset="88%" stop-color="#B04820"/><stop offset="100%" stop-color="#704018"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#qsky)"/>
+  <circle cx="280" cy="60" r="1.5" fill="#fff" opacity=".6"/><circle cx="500" cy="30" r="1" fill="#fff" opacity=".5"/><circle cx="720" cy="50" r="2" fill="#e8d0ff" opacity=".7"/><circle cx="1000" cy="25" r="1.5" fill="#fff" opacity=".65"/><circle cx="1200" cy="55" r="1" fill="#fff" opacity=".5"/>
+  <!-- Ground -->
+  <rect x="0" y="800" width="1440" height="100" fill="#2A1808" opacity=".9"/>
+  <rect x="0" y="796" width="1440" height="6" fill="#3A2010" opacity=".8"/>
+  <!-- Iron Pillar (left) -->
+  <rect x="568" y="680" width="10" height="122" fill="#604838" opacity=".6"/>
+  <rect x="564" y="795" width="18" height="8" rx="1" fill="#503828" opacity=".6"/>
+  <!-- QUTUB MINAR tower — tapered polygon -->
+  <polygon points="648,798 660,480 780,480 792,798" fill="#C09050" opacity=".75"/>
+  <!-- fluted ridges -->
+  <line x1="665" y1="798" x2="667" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".4"/>
+  <line x1="680" y1="798" x2="682" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".4"/>
+  <line x1="700" y1="798" x2="700" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".35"/>
+  <line x1="720" y1="798" x2="720" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".35"/>
+  <line x1="740" y1="798" x2="740" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".35"/>
+  <line x1="760" y1="798" x2="758" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".4"/>
+  <line x1="775" y1="798" x2="773" y2="480" stroke="#A07030" stroke-width="1.5" opacity=".4"/>
+  <!-- Balcony rings -->
+  <rect x="644" y="604" width="152" height="9" rx="1" fill="#C89848" opacity=".55"/>
+  <rect x="647" y="555" width="146" height="8" rx="1" fill="#C89848" opacity=".5"/>
+  <rect x="650" y="510" width="140" height="7" rx="1" fill="#C89848" opacity=".45"/>
+  <!-- Cap -->
+  <rect x="658" y="466" width="124" height="18" rx="2" fill="#D0A050" opacity=".6"/>
+  <ellipse cx="720" cy="460" rx="50" ry="18" fill="#C89848" opacity=".65"/>
+  <rect x="714" y="430" width="12" height="30" fill="#B08030" opacity=".7"/>
+  <circle cx="720" cy="428" r="7" fill="#E0B840" opacity=".8"/>
+  <!-- Mosque ruins left -->
+  <rect x="360" y="720" width="200" height="80" rx="2" fill="#906030" opacity=".35"/>
+  <rect x="370" y="714" width="30" height="88" rx="1" fill="#A07040" opacity=".4"/>
+  <rect x="420" y="714" width="30" height="88" rx="1" fill="#A07040" opacity=".38"/>
+  <rect x="470" y="718" width="30" height="84" rx="1" fill="#A07040" opacity=".36"/>
+  <!-- Mosque ruins right -->
+  <rect x="880" y="720" width="200" height="80" rx="2" fill="#906030" opacity=".35"/>
+  <rect x="890" y="714" width="30" height="88" rx="1" fill="#A07040" opacity=".38"/>
+  <rect x="940" y="714" width="30" height="88" rx="1" fill="#A07040" opacity=".36"/>
+  <rect x="990" y="718" width="30" height="84" rx="1" fill="#A07040" opacity=".34"/>
+</svg>
+</div>
+
+<!-- ── INDIA: RED FORT — hot amber midday ── -->
+<div class="world-layer" id="bg-redfort">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="rfsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#080410"/><stop offset="20%" stop-color="#180C20"/><stop offset="38%" stop-color="#3A1020"/><stop offset="52%" stop-color="#6A1818"/><stop offset="65%" stop-color="#9A2A10"/><stop offset="78%" stop-color="#C04810"/><stop offset="90%" stop-color="#A03808"/><stop offset="100%" stop-color="#702808"/>
+    </linearGradient>
+    <radialGradient id="rfsun" cx="50%" cy="68%" r="22%">
+      <stop offset="0%" stop-color="#FFE8A0" stop-opacity=".9"/><stop offset="35%" stop-color="#FF9820" stop-opacity=".5"/><stop offset="100%" stop-color="#FF5000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#rfsky)"/>
+  <ellipse cx="720" cy="612" rx="200" ry="150" fill="url(#rfsun)"/>
+  <circle cx="180" cy="55" r="1.5" fill="#fff" opacity=".6"/><circle cx="350" cy="28" r="1" fill="#fff" opacity=".5"/><circle cx="1100" cy="40" r="2" fill="#ffd0a0" opacity=".65"/><circle cx="1300" cy="60" r="1.5" fill="#fff" opacity=".55"/>
+  <!-- Ground -->
+  <rect x="0" y="800" width="1440" height="100" fill="#3A1808" opacity=".9"/>
+  <!-- RED FORT — sprawling red sandstone walls -->
+  <!-- Main curtain wall -->
+  <rect x="120" y="560" width="1200" height="248" fill="#8B2A18" opacity=".75"/>
+  <!-- Battlements row -->
+  <rect x="120" y="545" width="1200" height="20" fill="#9A3020" opacity=".8"/>
+  <!-- Merlons (battlements teeth) -->
+  <rect x="132" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="168" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="204" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="240" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="276" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="312" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="348" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="384" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="420" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="456" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="492" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="528" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="564" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="600" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="816" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="852" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="888" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="924" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="960" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".78"/>
+  <rect x="996" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1032" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1068" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1104" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1140" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1176" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1212" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1248" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <rect x="1284" y="524" width="22" height="24" rx="1" fill="#9A3020" opacity=".82"/>
+  <!-- Lahori Gate (main entrance) — centre -->
+  <rect x="620" y="540" width="200" height="268" fill="#7A2010" opacity=".9"/>
+  <rect x="650" y="570" width="140" height="238" fill="#060202" opacity=".7"/>
+  <ellipse cx="720" cy="570" rx="70" ry="48" fill="#060202" opacity=".7"/>
+  <!-- Gate side towers -->
+  <rect x="600" y="490" width="40" height="100" rx="2" fill="#8B2A18" opacity=".88"/>
+  <ellipse cx="620" cy="487" rx="22" ry="26" fill="#A03020" opacity=".85"/>
+  <rect x="760" y="490" width="40" height="100" rx="2" fill="#8B2A18" opacity=".88"/>
+  <ellipse cx="780" cy="487" rx="22" ry="26" fill="#A03020" opacity=".85"/>
+  <!-- Corner bastions -->
+  <rect x="120" y="420" width="80" height="160" rx="4" fill="#922818" opacity=".85"/>
+  <ellipse cx="160" cy="416" rx="44" ry="52" fill="#A03020" opacity=".82"/>
+  <rect x="1240" y="420" width="80" height="160" rx="4" fill="#922818" opacity=".85"/>
+  <ellipse cx="1280" cy="416" rx="44" ry="52" fill="#A03020" opacity=".82"/>
+</svg>
+</div>
+
+<!-- ── INDIA: KONARK SUN TEMPLE — bright noon golden ── -->
+<div class="world-layer" id="bg-konark">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="ksky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0E18"/><stop offset="22%" stop-color="#1A2040"/><stop offset="40%" stop-color="#2A3A70"/><stop offset="56%" stop-color="#486090"/><stop offset="70%" stop-color="#7A8890"/><stop offset="84%" stop-color="#9A8060"/><stop offset="100%" stop-color="#806040"/>
+    </linearGradient>
+    <radialGradient id="ksun" cx="72%" cy="45%" r="18%">
+      <stop offset="0%" stop-color="#FFF8C0" stop-opacity=".95"/><stop offset="30%" stop-color="#FFD860" stop-opacity=".6"/><stop offset="100%" stop-color="#FF9020" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#ksky)"/>
+  <ellipse cx="1040" cy="405" rx="180" ry="150" fill="url(#ksun)"/>
+  <!-- Ground / sand -->
+  <rect x="0" y="800" width="1440" height="100" fill="#705030" opacity=".9"/>
+  <!-- KONARK — chariot platform with wheels -->
+  <!-- Platform base -->
+  <rect x="240" y="680" width="960" height="130" fill="#B89050" opacity=".72"/>
+  <rect x="240" y="675" width="960" height="10" fill="#C8A860" opacity=".65"/>
+  <!-- Chariot wheels (left side) -->
+  <circle cx="310" cy="790" r="52" fill="none" stroke="#C89840" stroke-width="4" opacity=".7"/>
+  <circle cx="310" cy="790" r="38" fill="none" stroke="#C89840" stroke-width="1.5" opacity=".5"/>
+  <circle cx="310" cy="790" r="14" fill="#B08030" opacity=".6"/>
+  <!-- spokes -->
+  <line x1="310" y1="738" x2="310" y2="842" stroke="#C89840" stroke-width="2" opacity=".55"/>
+  <line x1="258" y1="790" x2="362" y2="790" stroke="#C89840" stroke-width="2" opacity=".55"/>
+  <line x1="273" y1="753" x2="347" y2="827" stroke="#C89840" stroke-width="2" opacity=".5"/>
+  <line x1="347" y1="753" x2="273" y2="827" stroke="#C89840" stroke-width="2" opacity=".5"/>
+  <!-- More wheels at regular spacing -->
+  <circle cx="490" cy="790" r="50" fill="none" stroke="#C89840" stroke-width="3.5" opacity=".65"/>
+  <circle cx="490" cy="790" r="36" fill="none" stroke="#C89840" stroke-width="1.5" opacity=".45"/>
+  <circle cx="490" cy="790" r="13" fill="#B08030" opacity=".55"/>
+  <line x1="490" y1="740" x2="490" y2="840" stroke="#C89840" stroke-width="2" opacity=".5"/><line x1="440" y1="790" x2="540" y2="790" stroke="#C89840" stroke-width="2" opacity=".5"/>
+  <circle cx="950" cy="790" r="50" fill="none" stroke="#C89840" stroke-width="3.5" opacity=".65"/>
+  <circle cx="950" cy="790" r="36" fill="none" stroke="#C89840" stroke-width="1.5" opacity=".45"/>
+  <circle cx="950" cy="790" r="13" fill="#B08030" opacity=".55"/>
+  <line x1="950" y1="740" x2="950" y2="840" stroke="#C89840" stroke-width="2" opacity=".5"/><line x1="900" y1="790" x2="1000" y2="790" stroke="#C89840" stroke-width="2" opacity=".5"/>
+  <circle cx="1130" cy="790" r="52" fill="none" stroke="#C89840" stroke-width="4" opacity=".7"/>
+  <circle cx="1130" cy="790" r="38" fill="none" stroke="#C89840" stroke-width="1.5" opacity=".5"/>
+  <circle cx="1130" cy="790" r="14" fill="#B08030" opacity=".6"/>
+  <line x1="1130" y1="738" x2="1130" y2="842" stroke="#C89840" stroke-width="2" opacity=".55"/><line x1="1078" y1="790" x2="1182" y2="790" stroke="#C89840" stroke-width="2" opacity=".55"/>
+  <!-- Jagamohana (entrance hall) -->
+  <rect x="420" y="528" width="320" height="162" fill="#C0A060" opacity=".7"/>
+  <!-- Shikhara (main tower) -->
+  <polygon points="580,260 480,528 680,528" fill="#C89848" opacity=".78"/>
+  <!-- Tower horizontal bands -->
+  <rect x="486" y="468" width="188" height="6" rx="1" fill="#A07828" opacity=".45"/>
+  <rect x="492" y="408" width="176" height="6" rx="1" fill="#A07828" opacity=".4"/>
+  <rect x="500" y="348" width="160" height="5" rx="1" fill="#A07828" opacity=".35"/>
+  <rect x="510" y="300" width="140" height="5" rx="1" fill="#A07828" opacity=".3"/>
+  <!-- Amalaka disc at top -->
+  <ellipse cx="580" cy="262" rx="32" ry="12" fill="#D0A840" opacity=".7"/>
+  <rect x="577" y="240" width="6" height="24" fill="#C09030" opacity=".7"/>
+  <circle cx="580" cy="238" r="5" fill="#E0C040" opacity=".8"/>
+</svg>
+</div>
+
+<!-- ── EGYPT: SPHINX — warm noon haze ── -->
+<div class="world-layer" id="bg-sphinx">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="spsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#101820"/><stop offset="22%" stop-color="#203040"/><stop offset="40%" stop-color="#406080"/><stop offset="56%" stop-color="#7898A8"/><stop offset="70%" stop-color="#B8A070"/><stop offset="85%" stop-color="#C07820"/><stop offset="100%" stop-color="#804808"/>
+    </linearGradient>
+    <radialGradient id="spsun" cx="60%" cy="52%" r="20%">
+      <stop offset="0%" stop-color="#FFF8C0" stop-opacity=".92"/><stop offset="30%" stop-color="#FFD040" stop-opacity=".55"/><stop offset="100%" stop-color="#FF8010" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#spsky)"/>
+  <ellipse cx="864" cy="468" rx="200" ry="170" fill="url(#spsun)"/>
+  <!-- Desert floor -->
+  <rect x="0" y="748" width="1440" height="152" fill="#C07820" opacity=".85"/>
+  <ellipse cx="400" cy="750" rx="360" ry="38" fill="#A86018" opacity=".6"/>
+  <ellipse cx="1100" cy="752" rx="280" ry="34" fill="#A86018" opacity=".55"/>
+  <!-- Pyramid in background -->
+  <polygon points="860,748 1100,380 1340,748" fill="#C09040" opacity=".55"/>
+  <polygon points="860,748 1100,380 980,748" fill="#906820" opacity=".35"/>
+  <line x1="880" y1="716" x2="1320" y2="716" stroke="#A07828" stroke-width="1" opacity=".25"/>
+  <line x1="904" y1="680" x2="1296" y2="680" stroke="#A07828" stroke-width="1" opacity=".2"/>
+  <!-- SPHINX — prominent centre-left -->
+  <!-- Body -->
+  <rect x="220" y="636" width="560" height="120" rx="16" fill="#C89040" opacity=".82"/>
+  <!-- Front paws -->
+  <rect x="220" y="720" width="110" height="50" rx="8" fill="#C89040" opacity=".78"/>
+  <rect x="368" y="720" width="110" height="50" rx="8" fill="#C89040" opacity=".74"/>
+  <!-- Head -->
+  <ellipse cx="738" cy="610" rx="96" ry="112" fill="#C89040" opacity=".84"/>
+  <!-- Nemes headdress -->
+  <rect x="650" y="554" width="176" height="34" rx="6" fill="#D4A840" opacity=".8"/>
+  <!-- Side lappets -->
+  <rect x="648" y="584" width="32" height="120" rx="6" fill="#C89040" opacity=".75"/>
+  <rect x="800" y="584" width="32" height="120" rx="6" fill="#C89040" opacity=".72"/>
+  <!-- Face details -->
+  <rect x="704" y="596" rx="3" width="20" height="7" fill="#A07020" opacity=".55"/>
+  <rect x="750" y="596" rx="3" width="20" height="7" fill="#A07020" opacity=".55"/>
+  <rect x="712" y="618" rx="2" width="24" height="5" fill="#906018" opacity=".45"/>
+  <!-- Beard -->
+  <rect x="724" y="698" rx="4" width="18" height="40" fill="#B08030" opacity=".5"/>
+  <!-- Uraeus cobra on headdress -->
+  <ellipse cx="738" cy="545" rx="8" ry="12" fill="#D0A020" opacity=".7"/>
+</svg>
+</div>
+
+<!-- ── EGYPT: LUXOR TEMPLE — evening orange ── -->
+<div class="world-layer" id="bg-luxor">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="lxsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#080810"/><stop offset="20%" stop-color="#181020"/><stop offset="38%" stop-color="#381828"/><stop offset="52%" stop-color="#682818"/><stop offset="65%" stop-color="#985028"/><stop offset="80%" stop-color="#C07030"/><stop offset="100%" stop-color="#904820"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#lxsky)"/>
+  <circle cx="200" cy="55" r="1.5" fill="#fff" opacity=".7"/><circle cx="420" cy="30" r="1" fill="#fff" opacity=".55"/><circle cx="700" cy="45" r="2" fill="#ffd0a0" opacity=".65"/><circle cx="1050" cy="28" r="1.5" fill="#fff" opacity=".6"/>
+  <!-- Ground / sand -->
+  <rect x="0" y="800" width="1440" height="100" fill="#6A3810" opacity=".9"/>
+  <!-- LEFT OBELISK -->
+  <polygon points="580,798 587,380 613,380 620,798" fill="#D0A840" opacity=".78"/>
+  <polygon points="596,370 587,380 613,380 624,370" fill="#D0A840" opacity=".8"/>
+  <rect x="578" y="795" width="44" height="10" rx="1" fill="#C09030" opacity=".7"/>
+  <line x1="597" y1="798" x2="596" y2="380" stroke="#A07820" stroke-width="1" opacity=".4"/>
+  <!-- RIGHT OBELISK -->
+  <polygon points="820,798 827,420 853,420 860,798" fill="#D0A840" opacity=".72"/>
+  <polygon points="836,410 827,420 853,420 864,410" fill="#D0A840" opacity=".75"/>
+  <rect x="818" y="795" width="44" height="10" rx="1" fill="#C09030" opacity=".65"/>
+  <!-- LEFT PYLON -->
+  <rect x="200" y="520" width="350" height="288" rx="1" fill="#B88840" opacity=".68"/>
+  <!-- pylon relief lines -->
+  <line x1="210" y1="560" x2="540" y2="560" stroke="#906820" stroke-width="1" opacity=".3"/>
+  <line x1="210" y1="610" x2="540" y2="610" stroke="#906820" stroke-width="1" opacity=".28"/>
+  <line x1="210" y1="660" x2="540" y2="660" stroke="#906820" stroke-width="1" opacity=".25"/>
+  <!-- Gateway -->
+  <rect x="540" y="600" width="360" height="208" fill="#080402" opacity=".65"/>
+  <!-- RIGHT PYLON -->
+  <rect x="890" y="520" width="350" height="288" rx="1" fill="#B88840" opacity=".62"/>
+  <line x1="900" y1="560" x2="1230" y2="560" stroke="#906820" stroke-width="1" opacity=".28"/>
+  <line x1="900" y1="610" x2="1230" y2="610" stroke="#906820" stroke-width="1" opacity=".25"/>
+  <!-- Columns behind gateway -->
+  <rect x="300" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".5"/>
+  <rect x="360" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".48"/>
+  <rect x="420" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".46"/>
+  <rect x="1000" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".48"/>
+  <rect x="1060" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".46"/>
+  <rect x="1120" y="580" width="22" height="220" rx="3" fill="#C0A048" opacity=".44"/>
+  <!-- Sphinx avenue (small) -->
+  <ellipse cx="340" cy="800" rx="18" ry="8" fill="#906020" opacity=".4"/>
+  <ellipse cx="460" cy="800" rx="18" ry="8" fill="#906020" opacity=".4"/>
+  <ellipse cx="980" cy="800" rx="18" ry="8" fill="#906020" opacity=".4"/>
+  <ellipse cx="1100" cy="800" rx="18" ry="8" fill="#906020" opacity=".4"/>
+</svg>
+</div>
+
+<!-- ── EGYPT: ABU SIMBEL — deep desert cliff dusk ── -->
+<div class="world-layer" id="bg-abusimbel">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="absky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#050308"/><stop offset="20%" stop-color="#100818"/><stop offset="38%" stop-color="#280C20"/><stop offset="54%" stop-color="#501820"/><stop offset="68%" stop-color="#803820"/><stop offset="82%" stop-color="#A85818"/><stop offset="100%" stop-color="#703808"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#absky)"/>
+  <circle cx="150" cy="50" r="1.5" fill="#fff" opacity=".7"/><circle cx="380" cy="25" r="1" fill="#fff" opacity=".55"/><circle cx="620" cy="55" r="2" fill="#ffd090" opacity=".65"/><circle cx="1050" cy="35" r="1.5" fill="#fff" opacity=".6"/><circle cx="1280" cy="58" r="1" fill="#fff" opacity=".5"/>
+  <!-- Cliff face -->
+  <rect x="0" y="340" width="1440" height="560" fill="#B08038" opacity=".7"/>
+  <rect x="0" y="334" width="1440" height="12" fill="#C09040" opacity=".6"/>
+  <!-- Cornice across top -->
+  <rect x="200" y="340" width="1040" height="22" rx="2" fill="#D0A840" opacity=".6"/>
+  <!-- Sun disc with cobras (top centre) -->
+  <circle cx="720" cy="352" rx="26" r="26" fill="#E0C040" opacity=".7"/>
+  <ellipse cx="720" cy="352" rx="26" ry="26" fill="#E0C040" opacity=".7"/>
+  <!-- 4 SEATED COLOSSI OF RAMESSES II -->
+  <!-- Colossus 1 (leftmost) -->
+  <rect x="210" y="520" width="120" height="288" rx="6" fill="#C09040" opacity=".82"/>
+  <ellipse cx="270" cy="506" rx="62" ry="72" fill="#C09040" opacity=".84"/>
+  <rect x="238" y="450" width="68" height="28" rx="4" fill="#D0A840" opacity=".78"/><!-- crown -->
+  <rect x="234" y="476" width="28" height="100" rx="4" fill="#C09040" opacity=".76"/>
+  <rect x="278" y="476" width="28" height="100" rx="4" fill="#C09040" opacity=".74"/>
+  <!-- Colossus 2 -->
+  <rect x="368" y="536" width="110" height="272" rx="5" fill="#B88838" opacity=".78"/>
+  <ellipse cx="423" cy="523" rx="56" ry="66" fill="#B88838" opacity=".80"/>
+  <rect x="396" y="472" width="56" height="24" rx="3" fill="#C89840" opacity=".72"/>
+  <rect x="392" y="492" width="22" height="88" rx="3" fill="#B88838" opacity=".7"/>
+  <rect x="430" y="492" width="22" height="88" rx="3" fill="#B88838" opacity=".68"/>
+  <!-- Entrance doorway -->
+  <rect x="570" y="480" width="300" height="328" fill="#080402" opacity=".72"/>
+  <rect x="560" y="476" width="320" height="12" rx="1" fill="#C09040" opacity=".55"/><!-- lintel -->
+  <!-- Colossus 3 -->
+  <rect x="960" y="536" width="110" height="272" rx="5" fill="#B88838" opacity=".78"/>
+  <ellipse cx="1015" cy="523" rx="56" ry="66" fill="#B88838" opacity=".80"/>
+  <rect x="990" y="472" width="56" height="24" rx="3" fill="#C89840" opacity=".72"/>
+  <rect x="986" y="492" width="22" height="88" rx="3" fill="#B88838" opacity=".7"/>
+  <rect x="1024" y="492" width="22" height="88" rx="3" fill="#B88838" opacity=".68"/>
+  <!-- Colossus 4 (rightmost) -->
+  <rect x="1110" y="520" width="120" height="288" rx="6" fill="#C09040" opacity=".82"/>
+  <ellipse cx="1170" cy="506" rx="62" ry="72" fill="#C09040" opacity=".84"/>
+  <rect x="1138" y="450" width="68" height="28" rx="4" fill="#D0A840" opacity=".78"/>
+  <rect x="1134" y="476" width="28" height="100" rx="4" fill="#C09040" opacity=".76"/>
+  <rect x="1178" y="476" width="28" height="100" rx="4" fill="#C09040" opacity=".74"/>
+  <!-- Ground level -->
+  <rect x="0" y="800" width="1440" height="100" fill="#6A3808" opacity=".9"/>
+</svg>
+</div>
+
+<!-- ── ROME: PANTHEON — overcast silver day ── -->
+<div class="world-layer" id="bg-pantheon">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="pnsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0C1020"/><stop offset="22%" stop-color="#1C2038"/><stop offset="40%" stop-color="#2C3458"/><stop offset="56%" stop-color="#3C4870"/><stop offset="70%" stop-color="#586488"/><stop offset="85%" stop-color="#6A7890"/><stop offset="100%" stop-color="#505868"/>
+    </linearGradient>
+    <radialGradient id="pnmoon" cx="38%" cy="28%" r="12%">
+      <stop offset="0%" stop-color="#E8E0C8" stop-opacity=".95"/><stop offset="55%" stop-color="#C0B890" stop-opacity=".4"/><stop offset="100%" stop-color="#607090" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#pnsky)"/>
+  <!-- Moon -->
+  <circle cx="548" cy="252" r="44" fill="#EEE6CC" opacity=".92"/>
+  <circle cx="536" cy="242" r="38" fill="url(#pnsky)" opacity=".22"/>
+  <ellipse cx="548" cy="252" rx="100" ry="88" fill="url(#pnmoon)"/>
+  <circle cx="80" cy="55" r="1.5" fill="#fff" opacity=".7"/><circle cx="220" cy="28" r="1" fill="#cde" opacity=".55"/><circle cx="880" cy="48" r="2" fill="#cde" opacity=".65"/><circle cx="1200" cy="32" r="1.5" fill="#fff" opacity=".6"/><circle cx="1380" cy="60" r="1" fill="#fff" opacity=".5"/>
+  <!-- Ground -->
+  <rect x="0" y="790" width="1440" height="110" fill="#201808" opacity=".9"/>
+  <!-- PANTHEON -->
+  <!-- Drum base -->
+  <rect x="380" y="568" width="680" height="240" rx="4" fill="#5A4830" opacity=".75"/>
+  <!-- Large dome -->
+  <ellipse cx="720" cy="550" rx="340" ry="255" fill="#4A3C28" opacity=".78"/>
+  <ellipse cx="720" cy="528" rx="310" ry="235" fill="#3E3020" opacity=".65"/>
+  <!-- Dome oculus (top opening) -->
+  <circle cx="720" cy="344" r="38" fill="#6080A0" opacity=".55"/>
+  <circle cx="720" cy="344" r="32" fill="#8090B0" opacity=".4"/>
+  <!-- Moon beam through oculus -->
+  <rect x="712" y="344" width="16" height="280" fill="rgba(200,200,255,0.06)"/>
+  <!-- Coffers on dome (horizontal bands) -->
+  <ellipse cx="720" cy="550" rx="280" ry="210" fill="none" stroke="rgba(200,180,100,0.1)" stroke-width="3"/>
+  <ellipse cx="720" cy="550" rx="230" ry="170" fill="none" stroke="rgba(200,180,100,0.09)" stroke-width="2.5"/>
+  <ellipse cx="720" cy="550" rx="180" ry="130" fill="none" stroke="rgba(200,180,100,0.08)" stroke-width="2"/>
+  <ellipse cx="720" cy="550" rx="130" ry="90" fill="none" stroke="rgba(200,180,100,0.07)" stroke-width="2"/>
+  <!-- Portico columns -->
+  <rect x="430" y="640" width="580" height="20" rx="1" fill="#706050" opacity=".7"/><!-- entablature -->
+  <rect x="434" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".65"/>
+  <rect x="484" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".63"/>
+  <rect x="534" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="584" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="634" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="684" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="734" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="784" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".62"/>
+  <rect x="834" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".63"/>
+  <rect x="884" y="560" width="22" height="82" rx="3" fill="#807060" opacity=".65"/>
+  <!-- Pediment -->
+  <polygon points="430,642 720,582 1010,642" fill="none" stroke="rgba(160,140,80,0.3)" stroke-width="1.5"/>
+  <!-- Door -->
+  <rect x="680" y="680" width="80" height="118" rx="2" fill="#080604" opacity=".7"/>
+  <ellipse cx="720" cy="680" rx="40" ry="28" fill="#080604" opacity=".7"/>
+</svg>
+</div>
+
+<!-- ── ROME: ROMAN FORUM — amber dusk ruins ── -->
+<div class="world-layer" id="bg-forum">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="fosky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#080610"/><stop offset="22%" stop-color="#180C20"/><stop offset="40%" stop-color="#301830"/><stop offset="56%" stop-color="#582820"/><stop offset="70%" stop-color="#884018"/><stop offset="84%" stop-color="#B06020"/><stop offset="100%" stop-color="#784010"/>
+    </linearGradient>
+    <radialGradient id="fosun" cx="65%" cy="60%" r="20%">
+      <stop offset="0%" stop-color="#FFE890" stop-opacity=".85"/><stop offset="35%" stop-color="#FF8820" stop-opacity=".45"/><stop offset="100%" stop-color="#FF4000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#fosky)"/>
+  <ellipse cx="936" cy="540" rx="180" ry="150" fill="url(#fosun)"/>
+  <circle cx="120" cy="58" r="1.5" fill="#fff" opacity=".6"/><circle cx="300" cy="30" r="1" fill="#fff" opacity=".5"/><circle cx="1100" cy="42" r="2" fill="#ffd090" opacity=".6"/><circle cx="1350" cy="55" r="1.5" fill="#fff" opacity=".55"/>
+  <!-- Paved ground -->
+  <rect x="0" y="780" width="1440" height="120" fill="#382010" opacity=".9"/>
+  <line x1="0" y1="776" x2="1440" y2="776" stroke="#604028" stroke-width="2" opacity=".6"/>
+  <!-- Scattered ruins — columns at different heights -->
+  <rect x="100" y="550" width="18" height="232" rx="3" fill="#8A6830" opacity=".6"/>
+  <rect x="150" y="490" width="18" height="292" rx="3" fill="#8A6830" opacity=".65"/>
+  <rect x="200" y="530" width="18" height="252" rx="3" fill="#8A6830" opacity=".58"/>
+  <rect x="280" y="460" width="20" height="322" rx="3" fill="#9A7838" opacity=".7"/>
+  <rect x="340" y="510" width="20" height="272" rx="3" fill="#9A7838" opacity=".65"/>
+  <rect x="420" y="440" width="22" height="342" rx="3" fill="#A08040" opacity=".72"/>
+  <rect x="500" y="420" width="22" height="362" rx="3" fill="#A08040" opacity=".75"/>
+  <!-- Temple of Saturn arch — prominent centre -->
+  <rect x="580" y="400" width="280" height="382" fill="#806030" opacity=".55"/>
+  <rect x="590" y="460" width="80" height="320" rx="3" fill="#A08040" opacity=".7"/>
+  <rect x="790" y="460" width="80" height="320" rx="3" fill="#A08040" opacity=".7"/>
+  <rect x="620" y="480" width="200" height="302" fill="#050302" opacity=".62"/><!-- opening -->
+  <ellipse cx="720" cy="480" rx="100" ry="68" fill="#050302" opacity=".62"/>
+  <rect x="580" y="392" width="280" height="16" rx="1" fill="#C09848" opacity=".6"/><!-- entablature -->
+  <!-- More ruins right -->
+  <rect x="940" y="450" width="20" height="332" rx="3" fill="#A08040" opacity=".7"/>
+  <rect x="1000" y="490" width="20" height="292" rx="3" fill="#9A7838" opacity=".65"/>
+  <rect x="1080" y="520" width="18" height="262" rx="3" fill="#8A6830" opacity=".62"/>
+  <rect x="1140" y="478" width="20" height="304" rx="3" fill="#9A7838" opacity=".68"/>
+  <rect x="1210" y="540" width="18" height="242" rx="3" fill="#8A6830" opacity=".58"/>
+  <rect x="1270" y="500" width="18" height="282" rx="3" fill="#8A6830" opacity=".62"/>
+  <rect x="1330" y="555" width="18" height="227" rx="3" fill="#8A6830" opacity=".55"/>
+  <!-- Broken column drums on ground -->
+  <ellipse cx="240" cy="778" rx="20" ry="8" fill="#806030" opacity=".55"/>
+  <ellipse cx="460" cy="780" rx="22" ry="8" fill="#806030" opacity=".5"/>
+  <ellipse cx="1150" cy="779" rx="18" ry="7" fill="#806030" opacity=".5"/>
+</svg>
+</div>
+
+<!-- ── ROME: ARCH OF CONSTANTINE — night torch glow ── -->
+<div class="world-layer" id="bg-arch">
+<svg viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" style="position:absolute;inset:0;width:100%;height:100%">
+  <defs>
+    <linearGradient id="acsky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#06080E"/><stop offset="20%" stop-color="#0E1020"/><stop offset="38%" stop-color="#181830"/><stop offset="54%" stop-color="#242840"/><stop offset="70%" stop-color="#324058"/><stop offset="85%" stop-color="#424E68"/><stop offset="100%" stop-color="#384458"/>
+    </linearGradient>
+    <radialGradient id="acmoon" cx="24%" cy="18%" r="10%">
+      <stop offset="0%" stop-color="#F0E8D0" stop-opacity=".92"/><stop offset="55%" stop-color="#C0B890" stop-opacity=".35"/><stop offset="100%" stop-color="#607090" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="actorch" cx="50%" cy="100%" r="40%">
+      <stop offset="0%" stop-color="#FF8820" stop-opacity=".3"/><stop offset="100%" stop-color="#FF4400" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#acsky)"/>
+  <!-- Moon -->
+  <circle cx="344" cy="162" r="40" fill="#F0E8D0" opacity=".9"/>
+  <circle cx="332" cy="152" r="34" fill="url(#acsky)" opacity=".2"/>
+  <ellipse cx="344" cy="162" rx="90" ry="80" fill="url(#acmoon)"/>
+  <!-- Stars -->
+  <circle cx="80" cy="55" r="1.5" fill="#fff" opacity=".75"/><circle cx="220" cy="30" r="1" fill="#cde" opacity=".6"/><circle cx="550" cy="48" r="2" fill="#cde" opacity=".65"/><circle cx="780" cy="22" r="1.5" fill="#fff" opacity=".8"/><circle cx="980" cy="50" r="1" fill="#fff" opacity=".55"/><circle cx="1150" cy="35" r="2" fill="#cde" opacity=".65"/><circle cx="1360" cy="60" r="1.5" fill="#fff" opacity=".7"/>
+  <!-- Torch glow at arch base -->
+  <ellipse cx="720" cy="900" rx="500" ry="200" fill="url(#actorch)"/>
+  <!-- Ground -->
+  <rect x="0" y="790" width="1440" height="110" fill="#16100A" opacity=".92"/>
+  <!-- ARCH OF CONSTANTINE — imposing, centre screen -->
+  <!-- Main structure -->
+  <rect x="330" y="380" width="780" height="430" rx="3" fill="#5A4428" opacity=".82"/>
+  <!-- Attic inscription band -->
+  <rect x="330" y="380" width="780" height="88" rx="2" fill="#4A3818" opacity=".9"/>
+  <!-- Inscription ghost lines -->
+  <line x1="370" y1="408" x2="1070" y2="408" stroke="rgba(200,170,80,0.18)" stroke-width="1"/>
+  <line x1="370" y1="428" x2="1070" y2="428" stroke="rgba(200,170,80,0.14)" stroke-width="1"/>
+  <line x1="370" y1="448" x2="1070" y2="448" stroke="rgba(200,170,80,0.12)" stroke-width="1"/>
+  <!-- LARGE CENTRAL ARCH -->
+  <rect x="570" y="500" width="300" height="310" fill="#080604" opacity=".78"/>
+  <ellipse cx="720" cy="500" rx="150" ry="105" fill="#080604" opacity=".78"/>
+  <!-- Two small side arches -->
+  <rect x="346" y="572" width="170" height="238" rx="2" fill="#080604" opacity=".62"/>
+  <ellipse cx="431" cy="572" rx="85" ry="60" fill="#080604" opacity=".62"/>
+  <rect x="924" y="572" width="170" height="238" rx="2" fill="#080604" opacity=".62"/>
+  <ellipse cx="1009" cy="572" rx="85" ry="60" fill="#080604" opacity=".62"/>
+  <!-- Corinthian columns flanking -->
+  <rect x="336" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".78"/>
+  <rect x="394" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".75"/>
+  <rect x="574" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".75"/>
+  <rect x="830" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".75"/>
+  <rect x="1010" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".75"/>
+  <rect x="1068" y="464" width="36" height="346" rx="4" fill="#6A5030" opacity=".78"/>
+  <!-- Column capitals -->
+  <rect x="330" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".75"/>
+  <rect x="388" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".72"/>
+  <rect x="568" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".72"/>
+  <rect x="824" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".72"/>
+  <rect x="1004" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".72"/>
+  <rect x="1062" y="456" width="48" height="12" rx="1" fill="#7A6038" opacity=".75"/>
+  <!-- Colosseum silhouette far background -->
+  <ellipse cx="1260" cy="620" rx="160" ry="95" fill="none" stroke="rgba(100,80,40,0.35)" stroke-width="3"/>
+  <ellipse cx="1260" cy="620" rx="120" ry="68" fill="none" stroke="rgba(100,80,40,0.22)" stroke-width="2"/>
+</svg>
+</div>
+
+</div><!-- /world-bg -->
+
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD
+═══════════════════════════════════════════ -->
+<div id="dashboard">
+<div id="dash-inner">
+
+  <!-- HEADER -->
+  <header class="dash-header">
+    <div class="dash-topbar">
+      <button class="dash-logo" onclick="goHome()" style="background:none;border:none;cursor:pointer;"><em>Exhibit</em>X</button>
+      <div style="display:flex;align-items:center;gap:0;">
+        <nav class="world-nav">
+          <button class="world-nav-btn active" data-w="0" onclick="switchWorld(0)">🇮🇳 India</button>
+          <button class="world-nav-btn" data-w="1" onclick="switchWorld(1)">🇪🇬 Egypt</button>
+          <button class="world-nav-btn" data-w="2" onclick="switchWorld(2)">🇮🇹 Rome</button>
+        </nav>
+        <div class="nav-icons">
+          <!-- Docs → GitHub repo -->
+          <a class="nav-icon-btn"
+             href="https://github.com/SamkitJain1812/AR-Based-Museum-Tour"
+             target="_blank" rel="noopener noreferrer"
+             data-tip="Docs / GitHub"
+             aria-label="View project on GitHub">
+            <svg viewBox="0 0 24 24">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+            </svg>
+          </a>
+          <!-- Login -->
+          <button class="nav-icon-btn" data-tip="Login" onclick="showToast('✦ Login coming soon')" aria-label="Login">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="dash-title-row">
+      <div class="dash-scroll-label">— Select the World to Dive Into —</div>
+      <h2 class="dash-main-title" id="world-title">Indian Heritage</h2>
+    </div>
+  </header>
+
+  <!-- CAROUSEL -->
+  <section class="carousel-section">
+    <button class="stone-arrow" onclick="prevExhibit()" aria-label="Previous">
+      <div class="stone-arrow-bg"></div>
+      <span class="stone-arrow-icon">❮</span>
+    </button>
+
+    <div class="card-viewport">
+      <article class="exhibit-card" id="exhibit-card">
+
+        <!-- Card header -->
+        <div class="card-header">
+          <div class="card-civ">
+            <span class="card-civ-flag" id="card-flag">🇮🇳</span>
+            <span class="card-civ-name" id="card-civ">Indian Heritage</span>
+          </div>
+          <div class="card-pips" id="card-pips"></div>
+        </div>
+
+        <!-- Card body — flex row -->
+        <div class="card-body">
+          <div class="card-left">
+            <div class="card-era"     id="card-era">1631–1653 CE · Mughal Empire</div>
+            <div class="card-name"    id="card-name">Taj Mahal</div>
+            <div class="card-location" id="card-loc">📍 Agra, Uttar Pradesh, India</div>
+            <div class="card-rule"></div>
+            <div class="card-desc"    id="card-desc">Ivory-white marble mausoleum commissioned by Emperor Shah Jahan in memory of his wife Mumtaz Mahal. UNESCO World Heritage Site and one of the Seven Wonders of the World.</div>
+          </div>
+          <div class="card-right">
+            <div class="card-stat">
+              <div class="stat-key">Height</div>
+              <div class="stat-val" id="stat-h">73 m</div>
+            </div>
+            <div class="card-stat">
+              <div class="stat-key">Constructed</div>
+              <div class="stat-val" id="stat-b">1631 CE</div>
+            </div>
+            <div class="card-stat">
+              <div class="stat-key">Status</div>
+              <div class="stat-val" id="stat-s">✦ UNESCO</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exhibit tabs -->
+        <div class="card-exhibit-tabs" id="exhibit-tabs"></div>
+
+      </article>
+    </div>
+
+    <button class="stone-arrow" onclick="nextExhibit()" aria-label="Next">
+      <div class="stone-arrow-bg"></div>
+      <span class="stone-arrow-icon">❯</span>
+    </button>
+  </section>
+
+  <!-- EXPLORE BUTTON -->
+  <div class="explore-wrap">
+    <button class="btn-ancient" onclick="launchAR()">
+      <div class="btn-ancient-bg"></div>
+      <div class="btn-ancient-content">
+        <div class="btn-seal"></div>
+        Explore in AR
+        <div class="btn-seal"></div>
+      </div>
+    </button>
+    <div class="explore-inscription" id="explore-inscription">Step inside · Point your device · Walk through history</div>
+  </div>
+
+  <!-- WORLD STRIP -->
+  <div class="world-strip">
+    <button class="world-tab-btn active" data-w="0" onclick="switchWorld(0)">
+      <span class="world-tab-flag">🇮🇳</span>
+      <span class="world-tab-name">Indian Heritage</span>
+    </button>
+    <button class="world-tab-btn" data-w="1" onclick="switchWorld(1)">
+      <span class="world-tab-flag">🇪🇬</span>
+      <span class="world-tab-name">Egyptian Wonders</span>
+    </button>
+    <button class="world-tab-btn" data-w="2" onclick="switchWorld(2)">
+      <span class="world-tab-flag">🇮🇹</span>
+      <span class="world-tab-name">Roman Grandeur</span>
+    </button>
+  </div>
+
+</div>
+</div><!-- /dashboard -->
+
+<!-- AR OVERLAY -->
+<div id="ar-overlay">
+  <div class="ar-ov-ornament">✦ ✦ ✦</div>
+  <div class="ar-ov-title" id="ar-title">Entering the Ancient World</div>
+  <div class="ar-ov-sub" id="ar-sub">Requesting camera and location access. Point your device at a flat surface — the monument shall rise before you.</div>
+  <div class="ar-spinner"></div>
+  <button class="btn-ancient-sm" onclick="closeAR()">
+    <div class="btn-ancient-sm-bg"></div>
+    <span class="btn-ancient-sm-text">← Return to the Gallery</span>
+  </button>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+/* ─── DATA ─── */
+const WORLDS = [
+  {
+    id:'india', label:'Indian Heritage', flag:'🇮🇳',
+    exhibits:[
+      { name:'Taj Mahal',        era:'1631–1653 CE · Mughal Empire',    loc:'📍 Agra, Uttar Pradesh',   desc:'Ivory-white marble mausoleum commissioned by Emperor Shah Jahan in memory of his wife. UNESCO World Heritage Site and one of the Seven Wonders of the World.', h:'73 m', b:'1631 CE', s:'✦ UNESCO', bgId:'bg-taj' },
+      { name:'Qutub Minar',      era:'1193 CE · Delhi Sultanate',        loc:'📍 Mehrauli, New Delhi',    desc:"World's tallest brick minaret at 72.5 m. Five distinct storeys of alternating fluted and stellar cross-section — built to proclaim the arrival of Islam in India.", h:'72.5 m', b:'1193 CE', s:'✦ UNESCO', bgId:'bg-qutub' },
+      { name:'Red Fort',         era:'1648 CE · Mughal Empire',          loc:'📍 Old Delhi, Delhi',       desc:"Imperial residence of the Mughal emperors for nearly two centuries. Built in red sandstone by Shah Jahan — site of India's Independence Day flag hoisting.", h:'Walls 33 m', b:'1648 CE', s:'✦ UNESCO', bgId:'bg-redfort' },
+      { name:'Konark Sun Temple',era:'1250 CE · Eastern Ganga Dynasty',  loc:'📍 Konark, Odisha',         desc:'Chariot-shaped temple dedicated to the Sun God Surya with 24 intricately carved wheels. A Kalinga architecture masterpiece — each wheel doubles as a precise sundial.', h:'~57 m', b:'1250 CE', s:'✦ UNESCO', bgId:'bg-konark' },
+    ]
+  },
+  {
+    id:'egypt', label:'Egyptian Wonders', flag:'🇪🇬',
+    exhibits:[
+      { name:'Great Pyramid of Giza', era:'c. 2560 BCE · Old Kingdom',  loc:'📍 Giza Plateau, Egypt', desc:'Oldest of the Seven Wonders and the only one still standing. Built for Pharaoh Khufu using 2.3 million stone blocks. Tallest man-made structure on Earth for 3,800 years.', h:'138.5 m', b:'2560 BCE', s:'✦ Wonder', bgId:'bg-pyramid' },
+      { name:'Great Sphinx',          era:'c. 2500 BCE · Old Kingdom',  loc:'📍 Giza, Egypt',         desc:"The world's largest monolithic statue — a human-headed lion hewn from a single limestone outcrop. Gazes eastward toward the rising sun, possibly aligned to the vernal equinox.", h:'20 m tall', b:'2500 BCE', s:'✦ UNESCO', bgId:'bg-sphinx' },
+      { name:'Luxor Temple',          era:'c. 1400 BCE · New Kingdom',  loc:'📍 Luxor (Thebes), Egypt', desc:'Not dedicated to a god but to the rejuvenation of kingship. Built by Amenhotep III and Ramesses II, connected to Karnak by a 3 km sphinx-lined ceremonial avenue.', h:'Pylons 24 m', b:'1400 BCE', s:'✦ UNESCO', bgId:'bg-luxor' },
+      { name:'Abu Simbel',            era:'c. 1264 BCE · New Kingdom',  loc:'📍 Aswan, Egypt',         desc:'Twin rock-cut temples commissioned by Ramesses II, relocated by UNESCO in 1968 to save them from rising Nile waters. Twice yearly, sunlight penetrates 60 m to illuminate the inner sanctuary.', h:'Colossi 20 m', b:'1264 BCE', s:'✦ UNESCO', bgId:'bg-abusimbel' },
+    ]
+  },
+  {
+    id:'rome', label:'Roman Grandeur', flag:'🇮🇹',
+    exhibits:[
+      { name:'The Colosseum',      era:'72–80 CE · Roman Empire',         loc:'📍 Rome, Italy',  desc:'Largest amphitheatre ever constructed. Held 50,000–80,000 spectators. Built with 100,000 cubic metres of travertine limestone — symbol of Imperial Rome\'s engineering genius and spectacle.', h:'48–50 m', b:'72 CE', s:'✦ UNESCO', bgId:'bg-colosseum' },
+      { name:'The Pantheon',       era:'125 CE · Roman Empire',           loc:'📍 Rome, Italy',  desc:"Best-preserved ancient Roman building. Its unreinforced concrete dome spanning 43 m with a 9-metre oculus has endured for 1,900 years — still the world's largest unreinforced concrete dome.", h:'Dome 43 m', b:'125 CE', s:'✦ Heritage', bgId:'bg-pantheon' },
+      { name:'Roman Forum',        era:'7th Century BCE · Roman Republic',loc:'📍 Rome, Italy',  desc:"Rome's civic and sacred heart for a thousand years. Senators debated, triumphal processions marched, and Julius Caesar was cremated here in 44 BCE after his assassination.", h:'Area ~2 ha', b:'7th C BCE', s:'✦ UNESCO', bgId:'bg-forum' },
+      { name:'Arch of Constantine',era:'315 CE · Late Roman Empire',      loc:'📍 Rome, Italy',  desc:"Largest surviving Roman triumphal arch, erected by the Senate to commemorate Constantine I's decisive victory at the Battle of Milvian Bridge. Adorned with spolia from earlier Flavian monuments.", h:'21 m tall', b:'315 CE', s:'✦ Heritage', bgId:'bg-arch' },
+    ]
+  }
+];
+
+/* ─── STATE ─── */
+let wIdx = 0, eIdx = 0;
+
+/* ─── INTRO → DASHBOARD ─── */
+function beginJourney() {
+  const intro = document.getElementById('intro');
+  intro.classList.add('exit');
+  setTimeout(() => {
+    intro.style.display = 'none';
+    document.getElementById('dashboard').classList.add('visible');
+    renderCard();
+  }, 1200);
+}
+
+/* ─── SWITCH WORLD ─── */
+function switchWorld(i) {
+  wIdx = i; eIdx = 0;
+  const w = WORLDS[i];
+  document.getElementById('world-title').textContent = w.label;
+  document.querySelectorAll('.world-nav-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  document.querySelectorAll('.world-tab-btn').forEach((b,j)=>b.classList.toggle('active',j===i));
+  renderCard();
+  showToast(w.flag + '  ' + w.label);
+}
+
+/* ─── EXHIBIT NAV ─── */
+function prevExhibit() {
+  const len = WORLDS[wIdx].exhibits.length;
+  eIdx = (eIdx - 1 + len) % len;
+  renderCard(true);
+}
+function nextExhibit() {
+  const len = WORLDS[wIdx].exhibits.length;
+  eIdx = (eIdx + 1) % len;
+  renderCard(true);
+}
+function jumpExhibit(i) { eIdx = i; renderCard(true); }
+
+/* ─── RENDER ─── */
+function renderCard(animate) {
+  const w = WORLDS[wIdx], e = w.exhibits[eIdx];
+  const card = document.getElementById('exhibit-card');
+  if (animate) { card.style.animation='none'; void card.offsetWidth; card.style.animation='cardReveal 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; }
+  document.getElementById('card-flag').textContent = w.flag;
+  document.getElementById('card-civ').textContent  = w.label;
+  document.getElementById('card-era').textContent  = e.era;
+  document.getElementById('card-name').textContent = e.name;
+  document.getElementById('card-loc').textContent  = e.loc;
+  document.getElementById('card-desc').textContent = e.desc;
+  document.getElementById('stat-h').textContent    = e.h;
+  document.getElementById('stat-b').textContent    = e.b;
+  document.getElementById('stat-s').textContent    = e.s;
+  document.getElementById('card-pips').innerHTML   = w.exhibits.map((_,i)=>`<div class="card-pip${i===eIdx?' active':''}" onclick="jumpExhibit(${i})"></div>`).join('');
+  document.getElementById('exhibit-tabs').innerHTML= w.exhibits.map((ex,i)=>`<div class="exhibit-tab${i===eIdx?' active':''}" onclick="jumpExhibit(${i})">${ex.name}</div>`).join('');
+  // Switch background to this exhibit's scene
+  document.querySelectorAll('.world-layer').forEach(l => l.classList.remove('active'));
+  const bgEl = document.getElementById(e.bgId);
+  if (bgEl) bgEl.classList.add('active');
+}
+
+/* ─── AR LAUNCH ─── */
+async function launchAR() {
+  const w = WORLDS[wIdx], e = w.exhibits[eIdx];
+  document.getElementById('ar-title').textContent = e.name;
+  document.getElementById('ar-sub').textContent   = `Requesting camera & location for the ${w.label} AR tour. Point your device at a flat surface — ${e.name} shall rise before you.`;
+  document.getElementById('ar-overlay').classList.add('show');
+  try {
+    const s = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    s.getTracks().forEach(t=>t.stop());
+  } catch(e) {
+    document.getElementById('ar-title').textContent = 'Camera Access Required';
+    document.getElementById('ar-sub').textContent   = 'Please grant camera permission in your browser settings to commence the AR journey.';
+    return;
+  }
+  try {
+    await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:8000}));
+    document.getElementById('ar-title').textContent = 'The Portal is Open';
+    document.getElementById('ar-sub').textContent   = `${e.name} awaits — 8 metres before you. Walk, turn, and let the monument follow your path through history.`;
+  } catch {
+    document.getElementById('ar-title').textContent = 'Location Unavailable';
+    document.getElementById('ar-sub').textContent   = 'GPS was not granted. The monument will appear in front of you but will not follow your movement.';
+  }
+}
+function closeAR() { document.getElementById('ar-overlay').classList.remove('show'); }
+
+/* ─── TOAST ─── */
+let _tt;
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  clearTimeout(_tt); _tt = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+/* ─── KEYBOARD ─── */
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') nextExhibit();
+  if(e.key==='ArrowLeft')  prevExhibit();
+  if(e.key==='1') switchWorld(0);
+  if(e.key==='2') switchWorld(1);
+  if(e.key==='3') switchWorld(2);
+});
+
+/* ─── GO HOME ─── */
+function goHome() {
+  const dash  = document.getElementById('dashboard');
+  const intro = document.getElementById('intro');
+  dash.style.transition = 'opacity 0.6s ease';
+  dash.style.opacity = '0';
+  setTimeout(() => {
+    dash.classList.remove('visible');
+    dash.style.opacity = '';
+    dash.style.transition = '';
+    intro.classList.remove('exit');
+    intro.style.display = '';
+    intro.style.opacity = '0';
+    void intro.offsetWidth;
+    intro.style.transition = 'opacity 0.7s ease';
+    intro.style.opacity = '1';
+    setTimeout(() => { intro.style.transition = ''; intro.style.opacity = ''; }, 750);
+  }, 600);
+}
+
+renderCard();
+</script>
+</div><!-- /app -->
+</body>
+</html>
