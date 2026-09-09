@@ -1,0 +1,27 @@
+/* 1. Browser ke default background ko completely hata dega */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent !important;
+  overflow: hidden; /* Scrollbars ko rokne ke liye */
+}
+
+/* 2. React ke main container ko transparent aur sabse aage (Top layer) rakhega */
+#root {
+  background-color: transparent !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; /* Yeh ensure karega ki React UI video ke upar rahe */
+}
+
+/* 3. A-Frame ka jo 3D canvas banta hai, usko sheeshe ki tarah aar-paar (transparent) banayega */
+.a-canvas {
+  background-color: transparent !important;
+}
+
+/* AR.js apne video element ko khud handle karta hai, isliye hum usko force nahi karenge. */

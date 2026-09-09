@@ -1,0 +1,55 @@
+import React from 'react'
+import './index.css';
+
+const Aframe = () => {
+  return (
+    <div style={{ width: '100vw', height: '100vh', margin: 0, overflow: 'hidden' }}>
+      <a-scene 
+        style={{ height: '100vh', width: '100vw' }} 
+        vr-mode-ui="enabled: false"
+        embedded
+        /* Yahan se videoTexture HATA DIYA HAI 👇 */
+        arjs="sourceType: webcam; debugUIEnabled: false;"
+        renderer="logarithmicDepthBuffer: true; alpha: true;"
+        /* Yahan se background wali line puri HATA DI HAI 👇 (Alpha: true hi kaafi hai transparency ke liye) */
+      >
+        
+        {/* AUDIO KO ASSETS KE ANDAR RAKHNA ZAROORI HAI */}
+        <a-assets>
+          <audio id="tajAudio" src="./tajaudio.mp3" preload="auto"></audio>
+        </a-assets>
+
+        <a-camera 
+          gps-new-camera
+          rotation-reader
+          simulateLatitude="28.47530361759228" simulateLongitude="77.47610800939034"
+          /* Phone ke liye simulated coordinates hata diye hain taaki asli GPS chale */
+        >
+          <a-cursor></a-cursor>
+        </a-camera>
+
+        <a-light type="ambient" intensity="0.8"></a-light>
+        <a-light type="directional" position="-0.22614 12.62656 -38.05302" intensity="2"></a-light>
+        <a-light type="directional" position="1.19297 16.55217 38.15947" intensity="2"></a-light>
+        <a-light type="directional" position="-34.78975 16.55217 -0.91331" intensity="2"></a-light>
+        <a-light type="directional" position="46.51516 14.10943 -7.28265" intensity="2"></a-light>
+        
+        <a-entity 
+          gltf-model="url(./taj_mahal_model.glb)" 
+          position="0 0 -10" 
+          scale="2 2 2"
+          gps-entity-place="latitude: 28.47530361759228; longitude: 77.47610800939034"
+        ></a-entity>
+
+        <a-box
+          sound="src: #tajAudio; on: click; volume: 1; refDistance: 10; rolloffFactor: 4"
+          position="-20 2 0"
+          color="#AA0000" /* Color code mein # lagana zaroori hai */
+          className="clickable" /* Cursor click ke liye */
+        ></a-box>    
+      </a-scene>
+    </div>
+  )
+}
+
+export default Aframe;

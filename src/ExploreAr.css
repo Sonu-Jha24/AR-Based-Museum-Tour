@@ -1,0 +1,177 @@
+/* Container ko screen ke center mein rakhne ke liye */
+.ar-guide-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: transparent; /* Piche ka background dikhne dega */
+}
+
+/* Premium Glass Card */
+.ar-guide-card {
+  background: rgba(15, 20, 35, 0.75);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(120, 200, 255, 0.2);
+  border-top: 1px solid rgba(150, 220, 255, 0.5);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 550px;
+  width: 100%;
+  color: #e0f4ff;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 
+              inset 0 0 20px rgba(120, 200, 255, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Text */
+.ar-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.ar-icon {
+  font-size: 50px;
+  display: block;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 10px rgba(120, 200, 255, 0.5));
+}
+
+.ar-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 26px;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.ar-header p {
+  color: #a8bacc;
+  font-size: 15px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Steps Styling */
+.ar-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 35px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 18px;
+  border-radius: 12px;
+  border-left: 4px solid #0078ff;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.step-item:hover {
+  transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.08);
+  border-left: 4px solid #ff9a4d; /* Hover par orange touch */
+}
+
+.step-number {
+  background: #0078ff;
+  color: white;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 15px;
+  box-shadow: 0 0 10px rgba(0, 120, 255, 0.5);
+}
+
+.step-text {
+  font-size: 15px;
+  color: #c8e6f5;
+  line-height: 1.4;
+}
+
+.step-text b {
+  color: #ffcc80;
+}
+
+/* Link Box & Copy Button */
+.ar-link-section {
+  display: flex;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(120, 200, 255, 0.3);
+}
+
+.ar-link-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #8fa5c0;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 0 10px;
+  outline: none;
+}
+
+.ar-copy-btn {
+  background: linear-gradient(135deg, #0055ff, #0078ff);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
+}
+
+.ar-copy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 85, 255, 0.6);
+}
+
+/* Jab text copy ho jaye toh button green ho jayega */
+.ar-copy-btn.copied {
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+}
+
+/* Card ko relative banayein taaki back button properly place ho sake */
+.ar-guide-card {
+  position: relative;
+}
+
+/* Premium Back Button Styling */
+.ar-back-btn {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #a8bacc;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.ar-back-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-color: rgba(120, 200, 255, 0.4);
+  transform: translateX(-4px); /* Hover karne par halka sa peeche khiskega */
+}
